@@ -1,8 +1,6 @@
 #include "log.h"
 
-#include <iostream>
-
-void log(const char* message)
+namespace Aegix
 {
-    std::cout << message << std::endl;
-}
+
+} // namespace Aegix
