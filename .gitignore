@@ -1,0 +1,10 @@
+
+# Generated files
+[Bb]uild/
+[Oo]ut/
+[Ll]og/
+
+# IDE files
+.vs/
+.vscode/
+.idea/
