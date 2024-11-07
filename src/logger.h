@@ -9,7 +9,7 @@ namespace Aegix
 class Logger
 {
 public:
-	Logger();
+	explicit Logger(Severity maxSeverity);
 	Logger(const Logger&) = delete;
 	~Logger();
 
@@ -23,9 +23,14 @@ public:
 private:
 	void print(Severity severity, const std::string& message)
 	{
+		if (severity > m_maxSeverity)
+			return;
+
 		std::cout << "[" << toString(severity) << "] " << message << std::endl;
 	}
 
 	inline static Logger* s_instance = nullptr;
+
+	Severity m_maxSeverity;
 };
 } // namespace Aegix

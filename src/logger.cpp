@@ -5,7 +5,7 @@
 namespace Aegix
 {
 
-Logger::Logger()
+Logger::Logger(Severity maxSeverity) : m_maxSeverity{ maxSeverity }
 {
 	assert(!s_instance && "Logger already initialized");
 	s_instance = this;

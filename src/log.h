@@ -32,9 +32,9 @@
 
 namespace Aegix::Log
 {
-Logger& init()
+Logger& init(Severity maxSeverity = Severity::Debug)
 {
-	static Logger logger;
+	static Logger logger(maxSeverity);
 	return logger;
 }
 } // namespace Aegix::Log

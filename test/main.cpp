@@ -5,7 +5,7 @@
 
 int main()
 {
-	Aegix::Log::init();
+	Aegix::Log::init(Aegix::Severity::Trace);
 
 	LOG_CRITICAL <<"This is a critical message";
 	LOG_WARNING << "This is a warning message";
