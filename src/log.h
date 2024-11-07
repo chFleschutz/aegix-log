@@ -4,22 +4,22 @@
 #include <iostream>
 #include <sstream>
 
-#define LOG_(severity) Aegix::Logger::instance() += Aegix::LogEntry() << "[" #severity "] "
+#define LOG(severity) Aegix::Logger::instance() += Aegix::LogEntry(severity)
 
-#define LOG_CRITICAL LOG_(CRITICAL)
-#define LOG_WARNING	 LOG_(WARNING)
-#define LOG_INFO	 LOG_(INFO)
+#define LOG_CRITICAL LOG(Aegix::Severity::Critical)
+#define LOG_WARNING	 LOG(Aegix::Severity::Warning)
+#define LOG_INFO	 LOG(Aegix::Severity::Info)
 
 #ifdef _DEBUG
-#define LOG_DEBUG LOG_(DEBUG)
-#define LOG_TRACE LOG_(TRACE)
+#define LOG_DEBUG LOG(Aegix::Severity::Debug)
+#define LOG_TRACE LOG(Aegix::Severity::Trace)
 #else
 #define LOG_DEBUG \
 	if (false)    \
-	LOG(DEBUG)
+	LOG(Aegix::Severity::Debug)
 #define LOG_TRACE \
 	if (false)    \
-	LOG(TRACE)
+	LOG(Aegix::Severity::Trace)
 #endif
 
 namespace Aegix
@@ -30,13 +30,21 @@ class Logger;
 namespace Log
 {
 Logger& init();
-}
+} // namespace Log
 
+enum class Severity
+{
+	Critical,
+	Warning,
+	Info,
+	Debug,
+	Trace
+};
 
 class LogEntry
 {
 public:
-	LogEntry() = default;
+	LogEntry(Severity severity) : m_severity{ severity } {}
 	LogEntry(const LogEntry&) = delete;
 	LogEntry(LogEntry&&) = delete;
 	~LogEntry() = default;
@@ -52,6 +60,7 @@ public:
 	}
 
 private:
+	Severity m_severity;
 	std::ostringstream m_stream;
 
 	friend class Logger;
@@ -70,7 +79,8 @@ public:
 
 	Logger& operator=(const Logger&) = delete;
 
-	void operator+=(LogEntry& entry) { std::cout << entry.m_stream.str() << std::endl; }
+	void operator+=(LogEntry& entry) { print(entry.m_severity, entry.m_stream.str()); }
+	void operator+=(LogEntry&& entry) { print(entry.m_severity, entry.m_stream.str()); }
 
 	static Logger& instance()
 	{
@@ -83,6 +93,24 @@ private:
 	{
 		assert(!s_instance && "Logger already initialized");
 		s_instance = this;
+	}
+
+	std::string_view severityToString(Severity severity)
+	{
+		switch (severity)
+		{
+		case Severity::Critical: return "CRITICAL";
+		case Severity::Warning: return "WARNING";
+		case Severity::Info: return "INFO";
+		case Severity::Debug: return "DEBUG";
+		case Severity::Trace: return "TRACE";
+		default: return "UNKNOWN";
+		}
+	}
+
+	void print(Severity severity, const std::string& message)
+	{
+		std::cout << "[" << severityToString(severity) << "] " << message << std::endl;
 	}
 
 	inline static Logger* s_instance = nullptr;
