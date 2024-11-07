@@ -12,9 +12,11 @@ add_library(Aegix::Log ALIAS ${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-        src/log.cpp
+        src/logger.cpp
     PUBLIC
         src/log.h
+        src/log_entry.h
+        src/logger.h
 )
 
 target_include_directories(${PROJECT_NAME}

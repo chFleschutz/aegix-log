@@ -10,8 +10,8 @@ int main()
 	LOG_CRITICAL <<"This is a critical message";
 	LOG_WARNING << "This is a warning message";
 	LOG_INFO << "This is an info message";
-	LOG_DEBUG << "This is a debug message";
-	LOG_TRACE << "This is a trace message";
+	LOG_DEBUG << "This is a debug message"; // Excluded in release builds
+	LOG_TRACE << "This is a trace message"; // Excluded in release builds
 
 	LOG_INFO;
 	LOG_INFO << std::setw(20) << std::setfill('-') << " 20->";

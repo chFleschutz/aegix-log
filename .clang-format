@@ -1,4 +1,5 @@
-# clang-format
+# Clang-format
+# Version: 17.0.0
 # See documentation at: https://clang.llvm.org/docs/ClangFormatStyleOptions.html
 
 # General
@@ -56,6 +57,10 @@ BinPackParameters: true
 NamespaceIndentation: None
 FixNamespaceComments: true
 ShortNamespaceLines: 3
+
+# Macros
+AlignConsecutiveMacros: true
+# SkipMacroDefinitionBody: true # Supported in version 18
 
 # Penalties
 PenaltyBreakBeforeFirstCallParameter: 100
