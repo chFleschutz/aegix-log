@@ -4,7 +4,6 @@
 
 namespace Aegix
 {
-
 enum class Severity
 {
 	Critical,
@@ -45,13 +44,13 @@ public:
 		return *this;
 	}
 
+	Severity severity() const { return m_severity; }
+	std::string message() const { return m_stream.str(); }
+
 	LogEntry& ref() { return *this; }
 
 private:
 	Severity m_severity;
 	std::ostringstream m_stream;
-
-	friend class Logger;
 };
-
 } // namespace Aegix

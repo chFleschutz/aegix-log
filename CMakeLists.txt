@@ -16,7 +16,9 @@ target_sources(${PROJECT_NAME}
     PUBLIC
         src/log.h
         src/log_entry.h
+        src/log_sink.h
         src/logger.h
+        src/sinks/console_sink.h
 )
 
 target_include_directories(${PROJECT_NAME}

@@ -1,13 +1,14 @@
 #include "log.h"
+#include "sinks/console_sink.h"
 
 #include <filesystem>
 #include <string>
 
 int main()
 {
-	Aegix::Log::init(Aegix::Severity::Trace);
+	Aegix::Log::init(Aegix::Severity::Trace).addSink<Aegix::ConsoleSink>();
 
-	LOG_CRITICAL <<"This is a critical message";
+	LOG_CRITICAL << "This is a critical message";
 	LOG_WARNING << "This is a warning message";
 	LOG_INFO << "This is an info message";
 	LOG_DEBUG << "This is a debug message"; // Excluded in release builds
