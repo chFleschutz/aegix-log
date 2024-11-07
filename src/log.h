@@ -1,17 +1,24 @@
 #pragma once
 
+#include <cassert>
 #include <iostream>
 
-#define LOG_CRITICAL(msg) Aegix::Logger::instance() << "[CRITICAL] " << msg << std::endl
-#define LOG_WARNING(msg) Aegix::Logger::instance() << "[WARNING] " << msg << std::endl
-#define LOG_INFO(msg) Aegix::Logger::instance() << "[INFO] " << msg << std::endl
+#define LOG_(severity) Aegix::Logger::instance() << "[" #severity "] "
+
+#define LOG_CRITICAL LOG_(CRITICAL)
+#define LOG_WARNING LOG_(WARNING)
+#define LOG_INFO LOG_(INFO)
 
 #ifdef _DEBUG
-#define LOG_DEBUG(msg) Aegix::Logger::instance() << "[DEBUG] " << msg << std::endl
-#define LOG_TRACE(msg) Aegix::Logger::instance() << "[TRACE] " << msg << std::endl
+#define LOG_DEBUG LOG_(DEBUG)
+#define LOG_TRACE LOG_(TRACE)
 #else
-#define LOG_DEBUG(msg) ((void)0)
-#define LOG_TRACE(msg) ((void)0)
+#define LOG_DEBUG \
+	if (false)    \
+	ALOG(DEBUG)
+#define LOG_TRACE \
+	if (false)    \
+	ALOG(TRACE)
 #endif
 
 namespace Aegix
@@ -19,8 +26,18 @@ namespace Aegix
 class Logger
 {
 public:
+	Logger()
+	{
+		assert(!s_instance && "Logger already initialized");
+		s_instance = this;
+	}
+
 	Logger(const Logger&) = delete;
-	~Logger() = default;
+	~Logger()
+	{
+		assert(s_instance);
+		s_instance = nullptr;
+	}
 
 	Logger& operator=(const Logger&) = delete;
 
@@ -39,11 +56,20 @@ public:
 
 	static Logger& instance()
 	{
-		static Logger logger;
-		return logger;
+		assert(s_instance && "Logger not initialized");
+		return *s_instance;
 	}
 
 private:
-	Logger() = default;
+	inline static Logger* s_instance = nullptr;
 };
 } // namespace Aegix
+
+namespace Aegix::Log
+{
+Logger& init()
+{
+	static Logger logger;
+	return logger;
+}
+}; // namespace Aegix::Log
