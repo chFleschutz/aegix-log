@@ -8,7 +8,7 @@
 
 // Logging macros
 
-#define LOG(severity) Aegix::Logger::instance() += Aegix::LogEntry(severity)
+#define LOG(severity) Aegix::Logger::instance() += Aegix::LogEntry(severity).ref()
 
 #define LOG_CRITICAL LOG(Aegix::Severity::Critical)
 #define LOG_WARNING	 LOG(Aegix::Severity::Warning)

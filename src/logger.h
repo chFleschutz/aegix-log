@@ -15,20 +15,17 @@ public:
 
 	Logger& operator=(const Logger&) = delete;
 
-	void operator+=(LogEntry& entry) { print(entry.m_severity, entry.m_stream.str()); }
-	void operator+=(LogEntry&& entry) { print(entry.m_severity, entry.m_stream.str()); }
+	void operator+=(LogEntry& entry)
+	{
+		if (entry.m_severity > m_maxSeverity)
+			return;
+
+		std::cout << "[" << toString(entry.m_severity) << "] " << entry.m_stream.str() << std::endl;
+	}
 
 	static Logger& instance();
 
 private:
-	void print(Severity severity, const std::string& message)
-	{
-		if (severity > m_maxSeverity)
-			return;
-
-		std::cout << "[" << toString(severity) << "] " << message << std::endl;
-	}
-
 	inline static Logger* s_instance = nullptr;
 
 	Severity m_maxSeverity;

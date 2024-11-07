@@ -45,6 +45,8 @@ public:
 		return *this;
 	}
 
+	LogEntry& ref() { return *this; }
+
 private:
 	Severity m_severity;
 	std::ostringstream m_stream;
@@ -52,4 +54,4 @@ private:
 	friend class Logger;
 };
 
-}
+} // namespace Aegix
