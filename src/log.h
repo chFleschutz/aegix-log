@@ -2,12 +2,13 @@
 
 #include <cassert>
 #include <iostream>
+#include <sstream>
 
-#define LOG_(severity) Aegix::Logger::instance() << "[" #severity "] "
+#define LOG_(severity) Aegix::Logger::instance() += Aegix::LogEntry() << "[" #severity "] "
 
 #define LOG_CRITICAL LOG_(CRITICAL)
-#define LOG_WARNING LOG_(WARNING)
-#define LOG_INFO LOG_(INFO)
+#define LOG_WARNING	 LOG_(WARNING)
+#define LOG_INFO	 LOG_(INFO)
 
 #ifdef _DEBUG
 #define LOG_DEBUG LOG_(DEBUG)
@@ -15,23 +16,51 @@
 #else
 #define LOG_DEBUG \
 	if (false)    \
-	ALOG(DEBUG)
+	LOG(DEBUG)
 #define LOG_TRACE \
 	if (false)    \
-	ALOG(TRACE)
+	LOG(TRACE)
 #endif
 
 namespace Aegix
 {
+
+class Logger;
+
+namespace Log
+{
+Logger& init();
+}
+
+
+class LogEntry
+{
+public:
+	LogEntry() = default;
+	LogEntry(const LogEntry&) = delete;
+	LogEntry(LogEntry&&) = delete;
+	~LogEntry() = default;
+
+	LogEntry& operator=(const LogEntry&) = delete;
+	LogEntry& operator=(LogEntry&&) = delete;
+
+	template <typename T>
+	LogEntry& operator<<(const T& value)
+	{
+		m_stream << value;
+		return *this;
+	}
+
+private:
+	std::ostringstream m_stream;
+
+	friend class Logger;
+};
+
+
 class Logger
 {
 public:
-	Logger()
-	{
-		assert(!s_instance && "Logger already initialized");
-		s_instance = this;
-	}
-
 	Logger(const Logger&) = delete;
 	~Logger()
 	{
@@ -41,18 +70,7 @@ public:
 
 	Logger& operator=(const Logger&) = delete;
 
-	template <typename T>
-	Logger& operator<<(const T& value)
-	{
-		std::cout << value;
-		return *this;
-	}
-
-	Logger& operator<<(std::ostream& (*func)(std::ostream&))
-	{
-		func(std::cout);
-		return *this;
-	}
+	void operator+=(LogEntry& entry) { std::cout << entry.m_stream.str() << std::endl; }
 
 	static Logger& instance()
 	{
@@ -61,15 +79,14 @@ public:
 	}
 
 private:
+	Logger()
+	{
+		assert(!s_instance && "Logger already initialized");
+		s_instance = this;
+	}
+
 	inline static Logger* s_instance = nullptr;
+
+	friend Logger& Log::init();
 };
 } // namespace Aegix
-
-namespace Aegix::Log
-{
-Logger& init()
-{
-	static Logger logger;
-	return logger;
-}
-}; // namespace Aegix::Log
