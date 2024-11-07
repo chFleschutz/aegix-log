@@ -21,10 +21,11 @@ public:
 	void operator+=(LogEntry& entry);
 
 	template <typename T, typename... Args>
-	void addSink(Args&&... args)
+	Logger& addSink(Args&&... args)
 	{
 		static_assert(std::is_base_of_v<LogSink, T>, "T must derive from LogSink");
 		m_sinks.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
+		return *this;
 	}
 
 	static Logger& instance();

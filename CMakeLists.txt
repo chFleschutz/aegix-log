@@ -19,6 +19,7 @@ target_sources(${PROJECT_NAME}
         src/log_sink.h
         src/logger.h
         src/sinks/console_sink.h
+        src/sinks/file_sink.h
 )
 
 target_include_directories(${PROJECT_NAME}

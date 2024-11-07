@@ -1,12 +1,17 @@
 #include "log.h"
 #include "sinks/console_sink.h"
+#include "sinks/file_sink.h"
 
 #include <filesystem>
 #include <string>
 
 int main()
 {
-	Aegix::Log::init(Aegix::Severity::Trace).addSink<Aegix::ConsoleSink>();
+	Aegix::Log::init(Aegix::Severity::Trace) //
+		.addSink<Aegix::ConsoleSink>()
+		.addSink<Aegix::FileSink>("logs/log.txt");
+
+	LOG_INFO << "Log-file: " << std::filesystem::current_path() / "logs" / "log.txt";
 
 	LOG_CRITICAL << "This is a critical message";
 	LOG_WARNING << "This is a warning message";
