@@ -1,7 +1,7 @@
 #pragma once
 
-#include "log_sink.h"
 #include "log.h"
+#include "log_sink.h"
 
 #include <cassert>
 #include <filesystem>
@@ -47,7 +47,7 @@ public:
 	{
 		if (!m_file.is_open())
 			return;
-		
+
 		m_file << "[" << toString(entry.severity()) << "] " << entry.message() << std::endl;
 	}
 

@@ -4,8 +4,7 @@
 
 namespace Aegix
 {
-
-Logger::Logger(Severity maxSeverity) : m_maxSeverity{ maxSeverity }
+Logger::Logger(Severity severityThreshold) : m_severityThreshold{ severityThreshold }
 {
 	assert(!s_instance && "Logger already initialized");
 	s_instance = this;
@@ -19,7 +18,7 @@ Logger::~Logger()
 
 void Logger::operator+=(LogEntry& entry)
 {
-	if (entry.severity() > m_maxSeverity)
+	if (entry.severity() > m_severityThreshold)
 		return;
 
 	for (const auto& sink : m_sinks)
@@ -33,5 +32,4 @@ Logger& Logger::instance()
 	assert(s_instance && "Logger not initialized");
 	return *s_instance;
 }
-
 } // namespace Aegix

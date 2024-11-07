@@ -12,7 +12,7 @@ namespace Aegix
 class Logger
 {
 public:
-	explicit Logger(Severity maxSeverity);
+	explicit Logger(Severity severityThreshold);
 	Logger(const Logger&) = delete;
 	~Logger();
 
@@ -30,10 +30,14 @@ public:
 
 	static Logger& instance();
 
+	Severity severityThreshold() const { return m_severityThreshold; }
+
+	void setSeverityThreshold(Severity severity) { m_severityThreshold = severity; }
+
 private:
 	inline static Logger* s_instance = nullptr;
 
-	Severity m_maxSeverity;
+	Severity m_severityThreshold;
 	std::vector<std::unique_ptr<LogSink>> m_sinks;
 };
 } // namespace Aegix
