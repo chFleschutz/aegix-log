@@ -20,14 +20,15 @@ namespace Aegix
 		}
 
 		Logger(const Logger&) = delete;
+		Logger(Logger&&) = delete;
 		~Logger()
 		{
 			assert(s_instance);
 			s_instance = nullptr;
 		}
 
-
 		Logger& operator=(const Logger&) = delete;
+		Logger& operator=(Logger&&) = delete;
 
 		void operator+=(LogEntry& entry)
 		{

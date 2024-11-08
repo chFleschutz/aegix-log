@@ -8,7 +8,12 @@ namespace Aegix
 	{
 	public:
 		LogSink() = default;
+		LogSink(const LogSink&) = delete;
+		LogSink(LogSink&&) = delete;
 		virtual ~LogSink() = default;
+
+		LogSink& operator=(const LogSink&) = delete;
+		LogSink& operator=(LogSink&&) = delete;
 
 		virtual void log(const LogEntry& entry) = 0;
 	};

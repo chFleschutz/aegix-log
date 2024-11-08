@@ -1,6 +1,5 @@
 // Example usage of the aegix-log library
 
-
 // Disable trace and debug messages in release mode
 #ifdef NDEBUG
 #define AEGIX_LOG_DISABLE_DEBUG
