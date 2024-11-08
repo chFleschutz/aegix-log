@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <sstream>
 
 namespace Aegix
@@ -29,7 +30,12 @@ namespace Aegix
 	class LogEntry
 	{
 	public:
-		LogEntry(Severity severity) : m_severity{ severity } {}
+		LogEntry(Severity severity)
+			: m_severity{ severity },
+			  m_time{ std::chrono::system_clock::now() }
+		{
+		}
+
 		LogEntry(const LogEntry&) = delete;
 		LogEntry(LogEntry&&) = delete;
 		~LogEntry() = default;
@@ -45,12 +51,15 @@ namespace Aegix
 		}
 
 		Severity severity() const { return m_severity; }
+		std::chrono::system_clock::time_point time() const { return m_time; }
 		std::string message() const { return m_stream.str(); }
 
 		LogEntry& ref() { return *this; }
 
 	private:
-		Severity m_severity;
 		std::ostringstream m_stream;
+
+		Severity m_severity;
+		std::chrono::system_clock::time_point m_time;
 	};
 } // namespace Aegix

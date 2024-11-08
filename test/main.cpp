@@ -46,10 +46,12 @@ int main()
 
 	// Multiple loggers
 	std::filesystem::path logFile = std::filesystem::current_path() / "logs" / "log.txt";
+
 	Aegix::Log::init<1>(Aegix::Severity::Critical) // Only shows critical messages
+		.addSink<Aegix::ConsoleSink>()
 		.addSink<Aegix::FileSink>(logFile);
 
-	ALOG_INFO << "Log-file: " << logFile;						// Only shows in logger 0
+	ALOG_CRITICAL << "Log-file: " << logFile;					// Only shows in logger 0
 	ALOG_CRITICAL_(1) << "This is a critical message to log 1"; // Only shows in logger 1
 	ALOG_INFO_(1) << "This is an info message to log 1";		// Excluded by severity threshold
 
