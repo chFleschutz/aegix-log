@@ -1,3 +1,12 @@
+// Example usage of the aegix-log library
+
+
+// Disable trace and debug messages in release mode
+#ifdef NDEBUG
+#define AEGIX_DISABLE_LOG_TRACE
+#define AEGIX_DISABLE_LOG_DEBUG
+#endif
+
 #include <aegix-log/log.h>
 #include <aegix-log/sinks/console_sink.h>
 #include <aegix-log/sinks/file_sink.h>
@@ -9,8 +18,6 @@ int main()
 {
 	Aegix::Log::init(Aegix::Severity::Trace) // Show all log messages
 		.addSink<Aegix::ConsoleSink>();
-
-	ALOG_INFO << "Log-file: " << std::filesystem::current_path() / "logs" / "log.txt";
 
 	// Basic logging
 	ALOG_CRITICAL << "This is a critical message";
