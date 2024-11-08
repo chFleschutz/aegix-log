@@ -12,13 +12,17 @@ namespace Aegix
 	public:
 		void log(const LogEntry& entry) override
 		{
-			if (entry.severity() >= Severity::Warning)
+			switch (entry.severity())
 			{
-				std::cerr << Log::formatText(entry) << "\n";
-			}
-			else
-			{
+			case Severity::Critical: 
+				std::cerr << "\033[41m" << Log::formatText(entry) << "\033[0m\n"; 
+				break;
+			case Severity::Warning: 
+				std::cerr << "\033[33m" << Log::formatText(entry) << "\033[0m\n";
+				break;
+			default: 
 				std::cout << Log::formatText(entry) << "\n";
+				break;
 			}
 		}
 	};
