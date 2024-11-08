@@ -1,7 +1,7 @@
 #pragma once
 
-#include "log_entry.h"
-#include "logger.h"
+#include "aegix-log/log_entry.h"
+#include "aegix-log/logger.h"
 
 #include <iostream>
 

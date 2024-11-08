@@ -1,7 +1,7 @@
 #pragma once
 
-#include "log.h"
-#include "log_sink.h"
+#include "aegix-log/log.h"
+#include "aegix-log/log_sink.h"
 
 #include <cassert>
 #include <filesystem>

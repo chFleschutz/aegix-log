@@ -1,6 +1,6 @@
 #pragma once
 
-#include "log_sink.h"
+#include "aegix-log/log_sink.h"
 
 #include <iostream>
 
