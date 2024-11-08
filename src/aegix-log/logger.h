@@ -6,19 +6,40 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <cassert>
 
 namespace Aegix
 {
+	template<int ID>
 	class Logger
 	{
 	public:
-		explicit Logger(Severity severityThreshold);
+		explicit Logger(Severity severityThreshold) : m_severityThreshold{ severityThreshold }
+		{
+			assert(!s_instance && "Logger already initialized");
+			s_instance = this;
+		}
+
 		Logger(const Logger&) = delete;
-		~Logger();
+		~Logger()
+		{
+			assert(s_instance);
+			s_instance = nullptr;
+		}
+
 
 		Logger& operator=(const Logger&) = delete;
 
-		void operator+=(LogEntry& entry);
+		void operator+=(LogEntry& entry)
+		{
+			if (entry.severity() > m_severityThreshold)
+				return;
+
+			for (const auto& sink : m_sinks)
+			{
+				sink->log(entry);
+			}
+		}
 
 		template <typename T, typename... Args>
 		Logger& addSink(Args&&... args)
@@ -28,7 +49,11 @@ namespace Aegix
 			return *this;
 		}
 
-		static Logger& instance();
+		static Logger& instance()
+		{
+			assert(s_instance && "Logger not initialized");
+			return *s_instance;
+		}
 
 		Severity severityThreshold() const { return m_severityThreshold; }
 

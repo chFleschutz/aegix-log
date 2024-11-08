@@ -11,9 +11,10 @@ if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     set(AEGIX_LOG_BUILD_TESTS ON CACHE BOOL "Force enabling tests in root project" FORCE)
 endif()
 
-# --- Subdirectories ---
-add_subdirectory(src)
+# --- Include directories ---
+include_directories(src)
 
+# --- Subdirectories ---
 if(AEGIX_LOG_BUILD_TESTS)
     add_subdirectory(test)
 endif()
