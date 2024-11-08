@@ -3,8 +3,8 @@
 
 // Disable trace and debug messages in release mode
 #ifdef NDEBUG
-#define AEGIX_DISABLE_LOG_TRACE
-#define AEGIX_DISABLE_LOG_DEBUG
+#define AEGIX_LOG_DISABLE_DEBUG
+#define AEGIX_LOG_DISABLE_TRACE
 #endif
 
 #include <aegix-log/log.h>
@@ -13,6 +13,7 @@
 
 #include <filesystem>
 #include <string>
+#include <iomanip>
 
 int main()
 {
@@ -34,7 +35,7 @@ int main()
 	ALOG_INFO << "The answer is " << 42 << " and pi is " << 3.14159 << "!";
 	ALOG_INFO << std::string("Im a string") << " and " << std::filesystem::path("im/a/path");
 	ALOG_INFO << std::setw(10) << std::setfill('0') << 42 << " is the answer";
-	ALOG_INFO << std::setprecision(1) << 3.14159 << " is pi";
+	ALOG_INFO << std::setprecision(1) << 3.14159 << " is pi (i guess)";
 
 	// Severity threshold
 	Aegix::Log::instance().setSeverityThreshold(Aegix::Severity::Warning);
