@@ -1,15 +1,15 @@
 #pragma once
 
 #include "aegix-log/log_entry.h"
-#include "aegix-log/log_sink.h"
+#include "aegix-log/sinks/log_sink.h"
 
+#include <cassert>
 #include <memory>
 #include <vector>
-#include <cassert>
 
 namespace Aegix
 {
-	template<int ID>
+	template <int ID>
 	class Logger
 	{
 	public:
