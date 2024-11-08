@@ -7,11 +7,11 @@ namespace Aegix
 {
 	enum class Severity
 	{
-		Critical,
-		Warning,
-		Info,
+		Trace,
 		Debug,
-		Trace
+		Info,
+		Warning,
+		Critical
 	};
 
 	class LogEntry

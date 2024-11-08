@@ -31,7 +31,7 @@ namespace Aegix
 
 		void operator+=(LogEntry& entry)
 		{
-			if (entry.severity() > m_severityThreshold)
+			if (entry.severity() < m_severityThreshold)
 				return;
 
 			for (const auto& sink : m_sinks)

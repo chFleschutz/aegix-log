@@ -10,6 +10,16 @@ namespace Aegix
 	class ConsoleSink : public LogSink
 	{
 	public:
-		void log(const LogEntry& entry) override { std::cout << Log::formatText(entry) << "\n"; }
+		void log(const LogEntry& entry) override
+		{
+			if (entry.severity() >= Severity::Warning)
+			{
+				std::cerr << Log::formatText(entry) << "\n";
+			}
+			else
+			{
+				std::cout << Log::formatText(entry) << "\n";
+			}
+		}
 	};
 } // namespace Aegix
