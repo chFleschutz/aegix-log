@@ -14,25 +14,11 @@ namespace Aegix
 		Trace
 	};
 
-	static std::string_view toString(Severity severity)
-	{
-		switch (severity)
-		{
-		case Severity::Critical: return "CRITICAL";
-		case Severity::Warning: return "WARNING";
-		case Severity::Info: return "INFO";
-		case Severity::Debug: return "DEBUG";
-		case Severity::Trace: return "TRACE";
-		default: return "UNKNOWN";
-		}
-	}
-
 	class LogEntry
 	{
 	public:
 		LogEntry(Severity severity)
-			: m_severity{ severity },
-			  m_time{ std::chrono::system_clock::now() }
+			: m_severity{ severity }, m_time{ std::chrono::system_clock::now() }
 		{
 		}
 
