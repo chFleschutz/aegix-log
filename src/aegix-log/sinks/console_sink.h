@@ -14,7 +14,7 @@ namespace Aegix
 		{
 			switch (entry.severity())
 			{
-			case Severity::Critical: 
+			case Severity::Fatal: 
 				std::cerr << "\033[41m" << Log::formatText(entry) << "\033[0m\n"; 
 				break;
 			case Severity::Warning: 

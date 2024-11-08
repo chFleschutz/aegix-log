@@ -8,8 +8,8 @@ namespace Aegix::Log
 	{
 		switch (severity)
 		{
-		case Severity::Critical: return "CRITICAL";
-		case Severity::Warning: return "WARNING";
+		case Severity::Fatal: return "FATAL";
+		case Severity::Warning: return "WARN";
 		case Severity::Info: return "INFO";
 		case Severity::Debug: return "DEBUG";
 		case Severity::Trace: return "TRACE";
@@ -23,7 +23,7 @@ namespace Aegix::Log
 		auto ms = localTime.time_since_epoch() % std::chrono::seconds(60);
 		float seconds = std::chrono::duration<float>(ms).count();
 
-		return std::format("{:%Y-%m-%d %H:%M:}{:0>6.3f} | {:<8} | {}",
+		return std::format("{:%Y-%m-%d %H:%M:}{:0>6.3f} | {:<5} | {}",
 			localTime,
 			seconds,
 			toString(entry.severity()),

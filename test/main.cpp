@@ -26,7 +26,7 @@ int main()
 	ALOG_INFO << "This is an info message";
 	ALOG_DEBUG << "This is a debug message";
 	ALOG_TRACE << "This is a trace message";
-	ALOG(Aegix::Severity::Critical) << "This is an explicit critical message";
+	ALOG(Aegix::Severity::Fatal) << "This is an explicit critical message";
 	ALOG(Aegix::Severity::Warning) << "This is an explicit warning message";
 
 	// Formatted logging
@@ -47,7 +47,7 @@ int main()
 	// Multiple loggers
 	std::filesystem::path logFile = std::filesystem::current_path() / "logs" / "log.txt";
 
-	Aegix::Log::init<1>(Aegix::Severity::Critical) // Only shows critical messages
+	Aegix::Log::init<1>(Aegix::Severity::Fatal) // Only shows critical messages
 		.addSink<Aegix::ConsoleSink>()
 		.addSink<Aegix::FileSink>(logFile);
 

@@ -11,7 +11,7 @@ namespace Aegix
 		Debug,
 		Info,
 		Warning,
-		Critical
+		Fatal
 	};
 
 	class LogEntry

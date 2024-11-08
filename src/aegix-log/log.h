@@ -51,7 +51,7 @@
 #define _ALOG_(id, severity) Aegix::Log::instance<id>() += Aegix::LogEntry(severity).ref()
 
 #define ALOG_(id, severity) _ALOG_IF_ALL_ _ALOG_(id, severity)
-#define ALOG_CRITICAL_(id)	_ALOG_IF_CRITICAL_ ALOG_(id, Aegix::Severity::Critical)
+#define ALOG_CRITICAL_(id)	_ALOG_IF_CRITICAL_ ALOG_(id, Aegix::Severity::Fatal)
 #define ALOG_WARNING_(id)	_ALOG_IF_WARNING_ ALOG_(id, Aegix::Severity::Warning)
 #define ALOG_INFO_(id)		_ALOG_IF_INFO_ ALOG_(id, Aegix::Severity::Info)
 #define ALOG_DEBUG_(id)		_ALOG_IF_DEBUG_ ALOG_(id, Aegix::Severity::Debug)
