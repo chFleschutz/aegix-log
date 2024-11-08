@@ -9,49 +9,49 @@
 
 namespace Aegix
 {
-class FileSink : public LogSink
-{
-public:
-	FileSink(const std::filesystem::path& filepath)
+	class FileSink : public LogSink
 	{
-		if (filepath.has_parent_path())
+	public:
+		FileSink(const std::filesystem::path& filepath)
 		{
-			std::error_code error;
-			std::filesystem::create_directories(filepath.parent_path(), error);
-			if (error)
+			if (filepath.has_parent_path())
 			{
-				assert(false && "Failed to create directory for log-file");
-				LOG_CRITICAL << "Failed to create directory for log-file: " << filepath.parent_path()
-							 << " Error: " << error.message();
+				std::error_code error;
+				std::filesystem::create_directories(filepath.parent_path(), error);
+				if (error)
+				{
+					assert(false && "Failed to create directory for log-file");
+					LOG_CRITICAL << "Failed to create directory for log-file: " << filepath.parent_path()
+								 << " Error: " << error.message();
+				}
+			}
+
+			m_file.open(filepath, std::ios::out | std::ios::trunc);
+			if (!m_file.is_open())
+			{
+				assert(false && "Failed to open log-file");
+				LOG_CRITICAL << "Failed to open log-file: " << filepath;
 			}
 		}
 
-		m_file.open(filepath, std::ios::out | std::ios::trunc);
-		if (!m_file.is_open())
+		~FileSink() override
 		{
-			assert(false && "Failed to open log-file");
-			LOG_CRITICAL << "Failed to open log-file: " << filepath;
+			if (m_file.is_open())
+			{
+				m_file.flush();
+				m_file.close();
+			}
 		}
-	}
 
-	~FileSink() override
-	{
-		if (m_file.is_open())
+		void log(const LogEntry& entry) override
 		{
-			m_file.flush();
-			m_file.close();
+			if (!m_file.is_open())
+				return;
+
+			m_file << "[" << toString(entry.severity()) << "] " << entry.message() << std::endl;
 		}
-	}
 
-	void log(const LogEntry& entry) override
-	{
-		if (!m_file.is_open())
-			return;
-
-		m_file << "[" << toString(entry.severity()) << "] " << entry.message() << std::endl;
-	}
-
-private:
-	std::ofstream m_file;
-};
+	private:
+		std::ofstream m_file;
+	};
 } // namespace Aegix

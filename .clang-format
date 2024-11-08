@@ -54,7 +54,7 @@ BinPackArguments: false
 BinPackParameters: true
 
 # Namespaces
-NamespaceIndentation: None
+NamespaceIndentation: All
 FixNamespaceComments: true
 ShortNamespaceLines: 3
 

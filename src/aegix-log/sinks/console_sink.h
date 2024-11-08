@@ -6,12 +6,12 @@
 
 namespace Aegix
 {
-class ConsoleSink : public LogSink
-{
-public:
-	void log(const LogEntry& entry) override
+	class ConsoleSink : public LogSink
 	{
-		std::cout << "[" << toString(entry.severity()) << "] " << entry.message() << std::endl;
-	}
-};
+	public:
+		void log(const LogEntry& entry) override
+		{
+			std::cout << "[" << toString(entry.severity()) << "] " << entry.message() << std::endl;
+		}
+	};
 } // namespace Aegix
