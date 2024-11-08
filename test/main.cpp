@@ -11,11 +11,19 @@
 #include <aegix-log/sinks/file_sink.h>
 
 #include <filesystem>
-#include <string>
 #include <iomanip>
+#include <string>
+
+// Define custom log IDs
+enum LogID
+{
+	DefaultLog = Aegix::Log::DEFAULT_ID,
+	SecondaryLog
+};
 
 int main()
 {
+	// Initialize default logger
 	Aegix::Log::init(Aegix::Severity::Trace) // Show all log messages
 		.addSink<Aegix::ConsoleSink>();
 
@@ -46,13 +54,13 @@ int main()
 	// Multiple loggers
 	std::filesystem::path logFile = std::filesystem::current_path() / "logs" / "log.txt";
 
-	Aegix::Log::init<1>(Aegix::Severity::Fatal) // Only shows critical messages
+	Aegix::Log::init<SecondaryLog>(Aegix::Severity::Fatal) // Only shows critical messages
 		.addSink<Aegix::ConsoleSink>()
 		.addSink<Aegix::FileSink>(logFile);
 
-	ALOG_CRITICAL << "Log-file: " << logFile;					// Only shows in logger 0
-	ALOG_CRITICAL_(1) << "This is a critical message to log 1"; // Only shows in logger 1
-	ALOG_INFO_(1) << "This is an info message to log 1";		// Excluded by severity threshold
+	ALOG_CRITICAL << "Log-file: " << logFile;							 // Only default logger 
+	ALOG_CRITICAL_(SecondaryLog) << "Critical message to secondary log"; // Only secondary logger 
+	ALOG_INFO_(SecondaryLog) << "Info message to secondary log"; // Excluded by severity threshold
 
 	return 0;
 }
