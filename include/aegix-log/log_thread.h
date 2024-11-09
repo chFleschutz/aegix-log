@@ -117,4 +117,7 @@ namespace Aegix::Log
 		std::thread m_workerThread;
 		std::atomic<bool> m_running = true;
 	};
+
+
+
 } // namespace Aegix::Log

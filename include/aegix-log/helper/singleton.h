@@ -24,7 +24,7 @@ namespace Aegix
 		Singleton& operator=(Singleton&&) = delete;
 
 		template <typename... Args>
-		static T& init(Args... args)
+		static T& init(Args&&... args)
 		{
 			static T instance(std::forward<Args>(args)...);
 			return instance;
