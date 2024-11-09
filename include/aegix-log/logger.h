@@ -4,6 +4,7 @@
 #include "aegix-log/log_entry.h"
 #include "aegix-log/sinks/log_sink.h"
 
+#include <atomic>
 #include <cassert>
 #include <memory>
 #include <mutex>
@@ -89,6 +90,6 @@ namespace Aegix
 
 		ThreadSafeQueue<LogEntry> m_logQueue;
 		std::thread m_workerThread;
-		bool m_running = true;
+		std::atomic<bool> m_running = true;
 	};
 } // namespace Aegix
