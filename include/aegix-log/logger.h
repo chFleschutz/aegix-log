@@ -1,5 +1,6 @@
 #pragma once
 
+#include "aegix-log/helper/singleton.h"
 #include "aegix-log/helper/thread_safe_queue.h"
 #include "aegix-log/log_entry.h"
 #include "aegix-log/sinks/log_sink.h"
@@ -11,34 +12,18 @@
 #include <thread>
 #include <vector>
 
-namespace Aegix
+namespace Aegix::Log
 {
 	template <int ID>
-	class Logger
+	class Logger : public Singleton<Logger<ID>>
 	{
 	public:
-		explicit Logger(Severity severityThreshold) : m_severityThreshold{ severityThreshold }
-		{
-			assert(!s_instance && "Logger already initialized");
-			s_instance = this;
-
-			m_workerThread = std::thread(&Logger::processLogQueue, this);
-		}
-
-		Logger(const Logger&) = delete;
-		Logger(Logger&&) = delete;
 		~Logger()
 		{
 			m_running = false;
 			if (m_workerThread.joinable())
 				m_workerThread.join();
-
-			assert(s_instance);
-			s_instance = nullptr;
 		}
-
-		Logger& operator=(const Logger&) = delete;
-		Logger& operator=(Logger&&) = delete;
 
 		void operator+=(LogEntry&& entry)
 		{
@@ -57,17 +42,17 @@ namespace Aegix
 			return *this;
 		}
 
-		static Logger& instance()
-		{
-			assert(s_instance && "Logger not initialized");
-			return *s_instance;
-		}
-
 		Severity severityThreshold() const { return m_severityThreshold; }
 
 		void setSeverityThreshold(Severity severity) { m_severityThreshold = severity; }
 
 	private:
+		explicit Logger(Severity severityThreshold)
+			: Singleton<Logger<ID>>(), m_severityThreshold{ severityThreshold }
+		{
+			m_workerThread = std::thread(&Logger::processLogQueue, this);
+		}
+
 		void processLogQueue()
 		{
 			while (m_running || !m_logQueue.empty())
@@ -81,8 +66,6 @@ namespace Aegix
 			}
 		}
 
-		inline static Logger* s_instance = nullptr;
-
 		Severity m_severityThreshold;
 
 		std::vector<std::unique_ptr<LogSink>> m_sinks;
@@ -91,5 +74,8 @@ namespace Aegix
 		ThreadSafeQueue<LogEntry> m_logQueue;
 		std::thread m_workerThread;
 		std::atomic<bool> m_running = true;
+
+		template <int N>
+		friend Logger<N>& init(Severity);
 	};
-} // namespace Aegix
+} // namespace Aegix::Log
