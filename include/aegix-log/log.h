@@ -76,9 +76,15 @@ namespace Aegix::Log
 {
 	constexpr int DEFAULT_ID = 0;
 
+	inline void startLogThread()
+	{
+		static LogThread logThread;
+	}
+
 	template <int id = DEFAULT_ID>
 	inline Logger<id>& init(Severity maxSeverity = Severity::Debug)
 	{
+		startLogThread();
 		static Logger<id> logger(maxSeverity);
 		return logger;
 	}

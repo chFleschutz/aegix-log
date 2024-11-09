@@ -44,5 +44,6 @@ int main()
 	ALOG_INFO << "This is an info message";	 // Excluded
 	ALOG_DEBUG << "This is a debug message"; // Excluded
 
+	std::cin.get();
 	return 0;
 }

@@ -43,5 +43,6 @@ int main()
 
 	ALOG_INFO << "All threads finished";
 
+	std::cin.get();
 	return 0;
 }

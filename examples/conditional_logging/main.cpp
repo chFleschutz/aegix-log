@@ -23,5 +23,6 @@ int main()
 	ALOG_DEBUG << "This is a debug message"; // Completely stripped from release builds
 	ALOG_TRACE << "This is a trace message"; // Completely stripped from release builds
 
+	std::cin.get();
 	return 0;
 }

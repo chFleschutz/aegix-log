@@ -34,8 +34,9 @@ int main()
 
 	// Print to secondary logger
 	ALOG_FATAL_(SecondaryLog) << "Fatal message to secondary log";
+	ALOG_WARN_(SecondaryLog) << "Warn message to secondary log";
 	ALOG_INFO_(SecondaryLog) << "Info message to secondary log";
-	ALOG_DEBUG_(SecondaryLog) << "Debug message to secondary log";
 
+	std::cin.get();
 	return 0;
 }
