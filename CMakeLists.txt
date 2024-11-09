@@ -1,20 +1,26 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(aegix_log)
+project(aegix-log LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # --- Options ---
-option(AEGIX_LOG_BUILD_TESTS "Build tests for Aegix::Log" OFF)
+option(AEGIX_LOG_BUILD_EXAMPLES "Build examples for Aegix::Log" OFF)
 
-if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-    set(AEGIX_LOG_BUILD_TESTS ON CACHE BOOL "Force enabling tests in root project" FORCE)
+# Force enabling examples in root project
+if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    set(AEGIX_LOG_BUILD_EXAMPLES ON CACHE BOOL "Force enable examples in root project" FORCE)
 endif()
 
-# --- Include directories ---
-include_directories(src)
+# --- Library ---
+add_library(${PROJECT_NAME} INTERFACE)
+add_library(Aegix::Log ALIAS ${PROJECT_NAME})
 
-# --- Subdirectories ---
-if(AEGIX_LOG_BUILD_TESTS)
-    add_subdirectory(test)
+target_include_directories(${PROJECT_NAME} INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+)
+
+# --- Examples ---
+if(AEGIX_LOG_BUILD_EXAMPLES)
+    add_subdirectory(examples)
 endif()
