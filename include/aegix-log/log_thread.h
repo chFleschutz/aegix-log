@@ -10,6 +10,43 @@
 
 namespace Aegix::Log
 {
+	class TaskToken
+	{
+	public:
+		TaskToken() = default;
+		TaskToken(const TaskToken&) = delete;
+		TaskToken(TaskToken&&) = delete;
+		~TaskToken() { waitPending(); }
+
+		TaskToken& operator=(const TaskToken&) = delete;
+		TaskToken& operator=(TaskToken&&) = delete;
+
+		void waitPending()
+		{
+			std::unique_lock lock(m_mutex);
+			m_condition.wait(lock, [this] { return m_pendingCount == 0; });
+		}
+
+		void taskQueued() 
+		{ 
+			std::lock_guard lock(m_mutex);
+			m_pendingCount++; 
+		}
+		void taskFinished()
+		{
+			std::lock_guard lock(m_mutex);
+			m_pendingCount--;
+			if (m_pendingCount == 0)
+				m_condition.notify_all();
+		}
+
+	private:
+		uint32_t m_pendingCount = 0;
+		std::condition_variable m_condition;
+		std::mutex m_mutex;
+	};
+
+
 	class LogThread : public Singleton<LogThread>
 	{
 	public:
@@ -19,7 +56,6 @@ namespace Aegix::Log
 		~LogThread()
 		{
 			m_running = false;
-			m_taskQueue.enqueue({ LogEntry(Severity::Trace), [](const LogEntry&) {} }); // Wake up the thread
 			if (m_workerThread.joinable())
 				m_workerThread.join();
 		}
@@ -27,11 +63,12 @@ namespace Aegix::Log
 		LogThread& operator=(const LogThread&) = delete;
 		LogThread& operator=(LogThread&&) = delete;
 
-		void addTask(LogEntry&& entry, std::function<void(const LogEntry&)> sinkFunc)
+		void addTask(LogEntry&& entry, std::function<void(const LogEntry&)> sinkFunc, TaskToken& token)
 		{
 			if (m_running)
 			{
-				m_taskQueue.enqueue({ std::move(entry), sinkFunc });
+				token.taskQueued();
+				m_taskQueue.enqueue({ std::move(entry), sinkFunc, token });
 			}
 		}
 
@@ -40,6 +77,7 @@ namespace Aegix::Log
 		{
 			LogEntry entry;
 			std::function<void(const LogEntry&)> sinkFunc;
+			TaskToken& token;
 		};
 
 		LogThread() : Singleton<LogThread>()
@@ -51,8 +89,9 @@ namespace Aegix::Log
 		{
 			while (m_running)
 			{
-				auto [entry, sink] = m_taskQueue.dequeue();
+				auto [entry, sink, token] = m_taskQueue.dequeue();
 				sink(entry);
+				token.taskFinished();
 			}
 		}
 

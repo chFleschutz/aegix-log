@@ -21,8 +21,10 @@ namespace Aegix::Log
 			if (entry.severity() < m_severityThreshold)
 				return;
 
-			LogThread::instance().addTask(std::move(entry),
-				[this](const LogEntry& entry) { write(entry); });
+			LogThread::instance().addTask(
+				std::move(entry),
+				[this](const LogEntry& entry) { write(entry); },
+				m_taskToken);
 		}
 
 		template <typename T, typename... Args>
@@ -55,6 +57,9 @@ namespace Aegix::Log
 
 		std::vector<std::unique_ptr<LogSink>> m_sinks;
 		std::mutex m_sinkMutex;
+
+		// Keep this last to ensure it's destroyed first
+		TaskToken m_taskToken;
 
 		template <int N>
 		friend Logger<N>& init(Severity);
