@@ -1,11 +1,12 @@
 #pragma once
 
 #include "aegix-log/helper/singleton.h"
-#include "aegix-log/helper/thread_safe_queue.h"
 #include "aegix-log/log_entry.h"
 
 #include <atomic>
+#include <condition_variable>
 #include <functional>
+#include <queue>
 #include <thread>
 
 namespace Aegix::Log
