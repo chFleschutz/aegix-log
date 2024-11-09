@@ -17,7 +17,7 @@ namespace Aegix
 			case Severity::Fatal:
 				std::cerr << "\033[41m" << Log::formatText(entry) << "\033[0m\n";
 				break;
-			case Severity::Warning:
+			case Severity::Warn:
 				std::cerr << "\033[33m" << Log::formatText(entry) << "\033[0m\n";
 				break;
 			default: std::cout << Log::formatText(entry) << "\n"; break;

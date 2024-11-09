@@ -28,13 +28,13 @@ int main()
 		.addSink<Aegix::ConsoleSink>();
 
 	// Basic logging
-	ALOG_CRITICAL << "This is a critical message";
-	ALOG_WARNING << "This is a warning message";
+	ALOG_FATAL << "This is a critical message";
+	ALOG_WARN << "This is a warning message";
 	ALOG_INFO << "This is an info message";
 	ALOG_DEBUG << "This is a debug message";
 	ALOG_TRACE << "This is a trace message";
 	ALOG(Aegix::Severity::Fatal) << "This is an explicit critical message";
-	ALOG(Aegix::Severity::Warning) << "This is an explicit warning message";
+	ALOG(Aegix::Severity::Warn) << "This is an explicit warning message";
 
 	// Formatted logging
 	ALOG_INFO;
@@ -45,9 +45,9 @@ int main()
 	ALOG_INFO << std::setprecision(1) << 3.14159 << " is pi (i guess)";
 
 	// Severity threshold
-	Aegix::Log::instance().setSeverityThreshold(Aegix::Severity::Warning);
-	ALOG_CRITICAL << "This is a critical message";
-	ALOG_WARNING << "This is a warning message";
+	Aegix::Log::instance().setSeverityThreshold(Aegix::Severity::Warn);
+	ALOG_FATAL << "This is a critical message";
+	ALOG_WARN << "This is a warning message";
 	ALOG_INFO << "This is an info message";	 // Excluded
 	ALOG_DEBUG << "This is a debug message"; // Excluded
 
@@ -58,8 +58,8 @@ int main()
 		.addSink<Aegix::ConsoleSink>()
 		.addSink<Aegix::FileSink>(logFile);
 
-	ALOG_CRITICAL << "Log-file: " << logFile;							 // Only default logger 
-	ALOG_CRITICAL_(SecondaryLog) << "Critical message to secondary log"; // Only secondary logger 
+	ALOG_FATAL << "Log-file: " << logFile;							 // Only default logger 
+	ALOG_FATAL_(SecondaryLog) << "Critical message to secondary log"; // Only secondary logger 
 	ALOG_INFO_(SecondaryLog) << "Info message to secondary log"; // Excluded by severity threshold
 
 	return 0;

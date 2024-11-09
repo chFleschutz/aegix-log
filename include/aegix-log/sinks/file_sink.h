@@ -22,7 +22,7 @@ namespace Aegix
 				if (error)
 				{
 					assert(false && "Failed to create directory for log-file");
-					LOG_CRITICAL << "Failed to create directory for log-file: " << filepath.parent_path()
+					LOG_FATAL << "Failed to create directory for log-file: " << filepath.parent_path()
 								 << " Error: " << error.message();
 				}
 			}
@@ -31,7 +31,7 @@ namespace Aegix
 			if (!m_file.is_open())
 			{
 				assert(false && "Failed to open log-file");
-				LOG_CRITICAL << "Failed to open log-file: " << filepath;
+				LOG_FATAL << "Failed to open log-file: " << filepath;
 			}
 		}
 

@@ -10,7 +10,7 @@ namespace Aegix
 		Trace,
 		Debug,
 		Info,
-		Warning,
+		Warn,
 		Fatal
 	};
 
