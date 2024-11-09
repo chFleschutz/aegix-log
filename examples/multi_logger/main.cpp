@@ -10,7 +10,7 @@
 // Define custom log IDs
 enum LogID
 {
-	DefaultLog = Aegix::Log::DEFAULT_ID,
+	DefaultLog = Aegix::Log::DEFAULT_LOGGER,
 	SecondaryLog
 };
 

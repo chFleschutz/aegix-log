@@ -57,12 +57,12 @@
 #define ALOG_DEBUG_(id)		_ALOG_IF_DEBUG_ ALOG_(id, Aegix::Severity::Debug)
 #define ALOG_TRACE_(id)		_ALOG_IF_TRACE_ ALOG_(id, Aegix::Severity::Trace)
 
-#define ALOG(severity) ALOG_(Aegix::Log::DEFAULT_ID, severity)
-#define ALOG_FATAL	   ALOG_FATAL_(Aegix::Log::DEFAULT_ID)
-#define ALOG_WARN	   ALOG_WARN_(Aegix::Log::DEFAULT_ID)
-#define ALOG_INFO	   ALOG_INFO_(Aegix::Log::DEFAULT_ID)
-#define ALOG_DEBUG	   ALOG_DEBUG_(Aegix::Log::DEFAULT_ID)
-#define ALOG_TRACE	   ALOG_TRACE_(Aegix::Log::DEFAULT_ID)
+#define ALOG(severity) ALOG_(Aegix::Log::DEFAULT_LOGGER, severity)
+#define ALOG_FATAL	   ALOG_FATAL_(Aegix::Log::DEFAULT_LOGGER)
+#define ALOG_WARN	   ALOG_WARN_(Aegix::Log::DEFAULT_LOGGER)
+#define ALOG_INFO	   ALOG_INFO_(Aegix::Log::DEFAULT_LOGGER)
+#define ALOG_DEBUG	   ALOG_DEBUG_(Aegix::Log::DEFAULT_LOGGER)
+#define ALOG_TRACE	   ALOG_TRACE_(Aegix::Log::DEFAULT_LOGGER)
 
 #define LOG(severity) ALOG(severity)
 #define LOG_FATAL	  ALOG_FATAL
@@ -74,24 +74,18 @@
 
 namespace Aegix::Log
 {
-	constexpr int DEFAULT_ID = 0;
+	constexpr int DEFAULT_LOGGER = 0;
 
-	inline void startLogThread()
+	template <int LogID = DEFAULT_LOGGER>
+	inline Logger<LogID>& init(Severity maxSeverity = Severity::Debug)
 	{
-		static LogThread logThread;
+		LogThread::init();
+		return Logger<LogID>::init(maxSeverity);
 	}
 
-	template <int id = DEFAULT_ID>
-	inline Logger<id>& init(Severity maxSeverity = Severity::Debug)
+	template <int LogID = DEFAULT_LOGGER>
+	inline Logger<LogID>& instance()
 	{
-		startLogThread();
-		static Logger<id> logger(maxSeverity);
-		return logger;
-	}
-
-	template <int id = DEFAULT_ID>
-	inline Logger<id>& instance()
-	{
-		return Logger<id>::instance();
+		return Logger<LogID>::instance();
 	}
 } // namespace Aegix::Log

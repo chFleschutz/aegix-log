@@ -51,6 +51,8 @@ namespace Aegix::Log
 	class LogThread : public Singleton<LogThread>
 	{
 	public:
+		friend class Singleton<LogThread>;
+
 		LogThread(const LogThread&) = delete;
 		LogThread(LogThread&&) = delete;
 
@@ -114,7 +116,5 @@ namespace Aegix::Log
 
 		std::thread m_workerThread;
 		std::atomic<bool> m_running = true;
-
-		friend void startLogThread();
 	};
 } // namespace Aegix::Log

@@ -23,10 +23,14 @@ namespace Aegix
 		Singleton& operator=(const Singleton&) = delete;
 		Singleton& operator=(Singleton&&) = delete;
 
-		static T& instance()
-		{ 
-			return *s_instance;
+		template <typename... Args>
+		static T& init(Args... args)
+		{
+			static T instance(std::forward<Args>(args)...);
+			return instance;
 		}
+
+		static T& instance() { return *s_instance; }
 
 	protected:
 		Singleton()

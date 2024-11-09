@@ -16,6 +16,8 @@ namespace Aegix::Log
 	class Logger : public Singleton<Logger<ID>>
 	{
 	public:
+		friend class Singleton<Logger<ID>>;
+
 		void operator+=(LogEntry&& entry)
 		{
 			if (entry.severity() < m_severityThreshold)
