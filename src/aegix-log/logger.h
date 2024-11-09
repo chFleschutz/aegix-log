@@ -5,6 +5,7 @@
 
 #include <cassert>
 #include <memory>
+#include <mutex>
 #include <vector>
 
 namespace Aegix
@@ -35,6 +36,7 @@ namespace Aegix
 			if (entry.severity() < m_severityThreshold)
 				return;
 
+			std::lock_guard<std::mutex> lock(m_mutex);
 			for (const auto& sink : m_sinks)
 			{
 				sink->log(entry);
@@ -64,5 +66,6 @@ namespace Aegix
 
 		Severity m_severityThreshold;
 		std::vector<std::unique_ptr<LogSink>> m_sinks;
+		std::mutex m_mutex;
 	};
 } // namespace Aegix
