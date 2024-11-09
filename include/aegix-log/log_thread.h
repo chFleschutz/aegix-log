@@ -48,14 +48,12 @@ namespace Aegix::Log
 	};
 
 
-	class LogThread : public Singleton<LogThread>
+	class LogThread
 	{
 	public:
-		friend class Singleton<LogThread>;
-
+		LogThread() { m_workerThread = std::thread(&LogThread::processTasks, this); }
 		LogThread(const LogThread&) = delete;
 		LogThread(LogThread&&) = delete;
-
 		~LogThread()
 		{
 			m_running = false;
@@ -87,11 +85,6 @@ namespace Aegix::Log
 			TaskToken& token;
 		};
 
-		LogThread() : Singleton<LogThread>()
-		{
-			m_workerThread = std::thread(&LogThread::processTasks, this);
-		}
-
 		void processTasks()
 		{
 			while (m_running)
@@ -118,6 +111,9 @@ namespace Aegix::Log
 		std::atomic<bool> m_running = true;
 	};
 
-
-
+	inline std::shared_ptr<LogThread> initLogThread()
+	{
+		static std::shared_ptr<LogThread> logThread = std::make_shared<LogThread>();
+		return logThread;
+	}
 } // namespace Aegix::Log

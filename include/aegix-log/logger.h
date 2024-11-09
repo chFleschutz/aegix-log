@@ -11,18 +11,16 @@
 
 namespace Aegix::Log
 {
-	template <int ID>
-	class Logger : public Singleton<Logger<ID>>
+	template <int _LogID>
+	class Logger : public Singleton<Logger<_LogID>>
 	{
 	public:
-		friend class Singleton<Logger<ID>>;
-
 		void operator+=(LogEntry&& entry)
 		{
 			if (entry.severity() < m_severityThreshold)
 				return;
 
-			LogThread::instance().addTask(std::move(entry), std::bind_front(&Logger::write, this), m_taskToken);
+			m_logThread->addTask(std::move(entry), std::bind_front(&Logger::write, this), m_taskToken);
 		}
 
 		template <typename T, typename... Args>
@@ -46,11 +44,12 @@ namespace Aegix::Log
 		void setSeverityThreshold(Severity severity) { m_severityThreshold = severity; }
 
 	private:
-		explicit Logger(Severity severityThreshold)
-			: Singleton<Logger<ID>>(), m_severityThreshold{ severityThreshold }
+		explicit Logger(std::shared_ptr<LogThread> logThread, Severity severityThreshold)
+			: Singleton<Logger<_LogID>>(), m_logThread{ logThread }, m_severityThreshold{ severityThreshold }
 		{
 		}
 
+		std::shared_ptr<LogThread> m_logThread;
 		Severity m_severityThreshold;
 
 		std::vector<std::unique_ptr<LogSink>> m_sinks;
@@ -58,5 +57,15 @@ namespace Aegix::Log
 
 		// Keep this last to ensure it's destroyed first
 		TaskToken m_taskToken;
+
+		template <int LogID>
+		friend Logger<LogID>& initLogger(std::shared_ptr<LogThread>, Severity);
 	};
+
+	template <int LogID>
+	inline Logger<LogID>& initLogger(std::shared_ptr<LogThread> logThread, Severity severityThreshold)
+	{
+		static Logger<LogID> logger(logThread, severityThreshold);
+		return logger;
+	}
 } // namespace Aegix::Log

@@ -77,10 +77,11 @@ namespace Aegix::Log
 	constexpr int DEFAULT_LOGGER = 0;
 
 	template <int LogID = DEFAULT_LOGGER>
-	inline Logger<LogID>& init(Severity maxSeverity = Severity::Debug)
+	inline Logger<LogID>& init(Severity severityThreshold = Severity::Debug)
 	{
-		LogThread::init();
-		return Logger<LogID>::init(maxSeverity);
+		auto logThread = initLogThread();
+		auto& logger = initLogger<LogID>(logThread, severityThreshold);
+		return logger;
 	}
 
 	template <int LogID = DEFAULT_LOGGER>
