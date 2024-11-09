@@ -1,11 +1,12 @@
 #pragma once
 
+#include "aegix-log/helper/thread_safe_queue.h"
 #include "aegix-log/log_entry.h"
 #include "aegix-log/sinks/log_sink.h"
 
 #include <cassert>
 #include <memory>
-#include <mutex>
+#include <thread>
 #include <vector>
 
 namespace Aegix
@@ -18,12 +19,18 @@ namespace Aegix
 		{
 			assert(!s_instance && "Logger already initialized");
 			s_instance = this;
+
+			m_workerThread = std::thread(&Logger::processLogQueue, this);
 		}
 
 		Logger(const Logger&) = delete;
 		Logger(Logger&&) = delete;
 		~Logger()
 		{
+			m_running = false;
+			if (m_workerThread.joinable())
+				m_workerThread.join();
+
 			assert(s_instance);
 			s_instance = nullptr;
 		}
@@ -31,16 +38,12 @@ namespace Aegix
 		Logger& operator=(const Logger&) = delete;
 		Logger& operator=(Logger&&) = delete;
 
-		void operator+=(LogEntry& entry)
+		void operator+=(LogEntry&& entry)
 		{
 			if (entry.severity() < m_severityThreshold)
 				return;
 
-			std::lock_guard<std::mutex> lock(m_mutex);
-			for (const auto& sink : m_sinks)
-			{
-				sink->log(entry);
-			}
+			m_logQueue.enqueue(std::move(entry));
 		}
 
 		template <typename T, typename... Args>
@@ -62,10 +65,25 @@ namespace Aegix
 		void setSeverityThreshold(Severity severity) { m_severityThreshold = severity; }
 
 	private:
+		void processLogQueue()
+		{
+			while (m_running || !m_logQueue.empty())
+			{
+				auto entry = m_logQueue.dequeue();
+				for (const auto& sink : m_sinks)
+				{
+					sink->log(entry);
+				}
+			}
+		}
+
 		inline static Logger* s_instance = nullptr;
 
 		Severity m_severityThreshold;
 		std::vector<std::unique_ptr<LogSink>> m_sinks;
-		std::mutex m_mutex;
+
+		ThreadSafeQueue<LogEntry> m_logQueue;
+		std::thread m_workerThread;
+		bool m_running = true;
 	};
 } // namespace Aegix

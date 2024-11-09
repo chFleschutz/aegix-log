@@ -23,17 +23,17 @@ namespace Aegix
 		}
 
 		LogEntry(const LogEntry&) = delete;
-		LogEntry(LogEntry&&) = delete;
+		LogEntry(LogEntry&&) = default;
 		~LogEntry() = default;
 
 		LogEntry& operator=(const LogEntry&) = delete;
-		LogEntry& operator=(LogEntry&&) = delete;
+		LogEntry& operator=(LogEntry&&) = default;
 
 		template <typename T>
-		LogEntry& operator<<(const T& value)
+		LogEntry&& operator<<(const T& value)
 		{
 			m_stream << value;
-			return *this;
+			return static_cast<LogEntry&&>(*this);
 		}
 
 		Severity severity() const { return m_severity; }

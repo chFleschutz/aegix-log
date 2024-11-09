@@ -48,7 +48,7 @@
 
 
 // Logging macros
-#define _ALOG_(id, severity) Aegix::Log::instance<id>() += Aegix::LogEntry(severity).ref()
+#define _ALOG_(id, severity) Aegix::Log::instance<id>() += Aegix::LogEntry(severity)
 
 #define ALOG_(id, severity) _ALOG_IF_ALL_ _ALOG_(id, severity)
 #define ALOG_FATAL_(id)		_ALOG_IF_FATAL_ ALOG_(id, Aegix::Severity::Fatal)
