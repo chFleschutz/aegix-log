@@ -37,6 +37,5 @@ int main()
 	ALOG_WARN_(SecondaryLog) << "Warn message to secondary log";
 	ALOG_INFO_(SecondaryLog) << "Info message to secondary log";
 
-	std::cin.get();
 	return 0;
 }

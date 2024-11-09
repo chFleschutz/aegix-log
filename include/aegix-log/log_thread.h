@@ -27,10 +27,10 @@ namespace Aegix::Log
 			m_condition.wait(lock, [this] { return m_pendingCount == 0; });
 		}
 
-		void taskQueued() 
-		{ 
+		void taskQueued()
+		{
 			std::lock_guard lock(m_mutex);
-			m_pendingCount++; 
+			m_pendingCount++;
 		}
 		void taskFinished()
 		{
@@ -56,6 +56,7 @@ namespace Aegix::Log
 		~LogThread()
 		{
 			m_running = false;
+			m_condition.notify_all();
 			if (m_workerThread.joinable())
 				m_workerThread.join();
 		}
@@ -65,11 +66,14 @@ namespace Aegix::Log
 
 		void addTask(LogEntry&& entry, std::function<void(const LogEntry&)> sinkFunc, TaskToken& token)
 		{
-			if (m_running)
-			{
-				token.taskQueued();
-				m_taskQueue.enqueue({ std::move(entry), sinkFunc, token });
-			}
+			if (!m_running)
+				return;
+
+			token.taskQueued();
+
+			std::lock_guard lock(m_mutex);
+			m_taskQueue.push({ std::move(entry), sinkFunc, token });
+			m_condition.notify_one();
 		}
 
 	private:
@@ -89,13 +93,23 @@ namespace Aegix::Log
 		{
 			while (m_running)
 			{
-				auto [entry, sink, token] = m_taskQueue.dequeue();
-				sink(entry);
-				token.taskFinished();
+				std::unique_lock lock(m_mutex);
+				m_condition.wait(lock, [this] { return !m_taskQueue.empty() || !m_running; });
+				if (!m_running)
+					break;
+
+				Task task = std::move(m_taskQueue.front());
+				m_taskQueue.pop();
+				lock.unlock();
+
+				task.sinkFunc(task.entry);
+				task.token.taskFinished();
 			}
 		}
 
-		ThreadSafeQueue<Task> m_taskQueue;
+		std::queue<Task> m_taskQueue;
+		std::condition_variable m_condition;
+		std::mutex m_mutex;
 
 		std::thread m_workerThread;
 		std::atomic<bool> m_running = true;
