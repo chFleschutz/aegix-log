@@ -6,6 +6,7 @@
 
 #include <cassert>
 #include <memory>
+#include <mutex>
 #include <thread>
 #include <vector>
 
@@ -50,6 +51,7 @@ namespace Aegix
 		Logger& addSink(Args&&... args)
 		{
 			static_assert(std::is_base_of_v<LogSink, T>, "T must derive from LogSink");
+			std::lock_guard lock(m_sinkMutex);
 			m_sinks.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
 			return *this;
 		}
@@ -70,6 +72,7 @@ namespace Aegix
 			while (m_running || !m_logQueue.empty())
 			{
 				auto entry = m_logQueue.dequeue();
+				std::lock_guard lock(m_sinkMutex);
 				for (const auto& sink : m_sinks)
 				{
 					sink->log(entry);
@@ -80,7 +83,9 @@ namespace Aegix
 		inline static Logger* s_instance = nullptr;
 
 		Severity m_severityThreshold;
+
 		std::vector<std::unique_ptr<LogSink>> m_sinks;
+		std::mutex m_sinkMutex;
 
 		ThreadSafeQueue<LogEntry> m_logQueue;
 		std::thread m_workerThread;
