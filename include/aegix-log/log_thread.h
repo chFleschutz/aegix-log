@@ -111,6 +111,7 @@ namespace Aegix::Log
 		std::atomic<bool> m_running = true;
 	};
 
+	template <int ThreadID>
 	inline std::shared_ptr<LogThread> initLogThread()
 	{
 		static std::shared_ptr<LogThread> logThread = std::make_shared<LogThread>();

@@ -20,7 +20,14 @@ namespace Aegix::Log
 			if (entry.severity() < m_severityThreshold)
 				return;
 
-			m_logThread->addTask(std::move(entry), std::bind_front(&Logger::write, this), m_taskToken);
+			if (m_logThread)
+			{
+				m_logThread->addTask(std::move(entry), std::bind_front(&Logger::write, this), m_taskToken);
+			}
+			else
+			{
+				write(entry);
+			}
 		}
 
 		template <typename T, typename... Args>
