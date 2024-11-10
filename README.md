@@ -106,3 +106,29 @@ int main()
 	ALOG_INFO_(Log2) << "Info message to secondary log"; // Excluded
 }
 ```
+
+**Exclude logs from release build**
+```cpp
+// Exclude trace and debug messages in release mode
+#ifdef NDEBUG
+#define AEGIX_LOG_DISABLE_DEBUG
+#define AEGIX_LOG_DISABLE_TRACE
+#endif
+
+#include <aegix-log/log.h>
+#include <aegix-log/sinks/console_sink.h>
+
+int main()
+{
+	Aegix::Log::init(Aegix::Severity::Trace) // Show all log messages
+		.addSink<Aegix::ConsoleSink>();
+
+	ALOG_FATAL << "This is a critical message";
+	ALOG_WARN << "This is a warning message";
+	ALOG_INFO << "This is an info message";
+	ALOG_DEBUG << "This is a debug message"; // Completely stripped from release builds
+	ALOG_TRACE << "This is a trace message"; // Completely stripped from release builds
+
+	return 0;
+}
+```
