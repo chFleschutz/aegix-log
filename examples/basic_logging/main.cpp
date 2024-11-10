@@ -13,9 +13,9 @@
 int main()
 {
 	// Initialize default logger
-	Aegix::Log::init(Aegix::Log::Severity::Trace) // Show all log messages
+	Aegix::Log::init(Aegix::Log::Trace) // Show all log messages
 		.addSink<Aegix::Log::ConsoleSink>();
-
+	
 	// Basic logging
 	ALOG_FATAL << "This is a critical message";
 	ALOG_WARN << "This is a warning message";

@@ -17,7 +17,7 @@ enum LogID
 int main()
 {
 	// Default logger
-	Aegix::Log::init(Aegix::Log::Severity::Trace) // Show all log messages
+	Aegix::Log::init(Aegix::Log::Trace) // Show all log messages
 		.addSink<Aegix::Log::ConsoleSink>();
 
 	// Secondary logger

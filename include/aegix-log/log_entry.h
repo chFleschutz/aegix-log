@@ -13,6 +13,8 @@ namespace Aegix::Log
 		Warn,
 		Fatal
 	};
+	
+	using enum Severity;
 
 	class LogEntry
 	{
