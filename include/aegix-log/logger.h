@@ -22,7 +22,7 @@ namespace Aegix::Log
 
 			if (m_logThread)
 			{
-				m_logThread->addTask(std::move(entry), std::bind_front(&Logger::write, this), m_taskToken);
+				*m_logThread += { std::move(entry), std::bind_front(&Logger::write, this), m_taskToken };
 			}
 			else
 			{

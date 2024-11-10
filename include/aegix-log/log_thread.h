@@ -24,18 +24,19 @@ namespace Aegix::Log
 
 		void waitPending()
 		{
-			std::unique_lock lock(m_mutex);
+			std::unique_lock lock(m_queueMutex);
 			m_condition.wait(lock, [this] { return m_pendingCount == 0; });
 		}
 
-		void taskQueued()
+		void queued()
 		{
-			std::lock_guard lock(m_mutex);
+			std::lock_guard lock(m_queueMutex);
 			m_pendingCount++;
 		}
-		void taskFinished()
+
+		void finished()
 		{
-			std::lock_guard lock(m_mutex);
+			std::lock_guard lock(m_queueMutex);
 			m_pendingCount--;
 			if (m_pendingCount == 0)
 				m_condition.notify_all();
@@ -44,13 +45,20 @@ namespace Aegix::Log
 	private:
 		uint32_t m_pendingCount = 0;
 		std::condition_variable m_condition;
-		std::mutex m_mutex;
+		std::mutex m_queueMutex;
 	};
 
 
 	class LogThread
 	{
 	public:
+		struct Task
+		{
+			LogEntry entry;
+			std::function<void(const LogEntry&)> sinkFunc;
+			TaskToken& token;
+		};
+
 		LogThread() { m_workerThread = std::thread(&LogThread::processTasks, this); }
 		LogThread(const LogThread&) = delete;
 		LogThread(LogThread&&) = delete;
@@ -65,31 +73,24 @@ namespace Aegix::Log
 		LogThread& operator=(const LogThread&) = delete;
 		LogThread& operator=(LogThread&&) = delete;
 
-		void addTask(LogEntry&& entry, std::function<void(const LogEntry&)> sinkFunc, TaskToken& token)
+		void operator+=(Task&& task)
 		{
 			if (!m_running)
 				return;
 
-			token.taskQueued();
+			task.token.queued();
 
-			std::lock_guard lock(m_mutex);
-			m_taskQueue.push({ std::move(entry), sinkFunc, token });
+			std::lock_guard lock(m_queueMutex);
+			m_taskQueue.push(std::move(task));
 			m_condition.notify_one();
 		}
 
 	private:
-		struct Task
-		{
-			LogEntry entry;
-			std::function<void(const LogEntry&)> sinkFunc;
-			TaskToken& token;
-		};
-
 		void processTasks()
 		{
 			while (m_running)
 			{
-				std::unique_lock lock(m_mutex);
+				std::unique_lock lock(m_queueMutex);
 				m_condition.wait(lock, [this] { return !m_taskQueue.empty() || !m_running; });
 				if (!m_running)
 					break;
@@ -99,17 +100,18 @@ namespace Aegix::Log
 				lock.unlock();
 
 				task.sinkFunc(task.entry);
-				task.token.taskFinished();
+				task.token.finished();
 			}
 		}
 
 		std::queue<Task> m_taskQueue;
 		std::condition_variable m_condition;
-		std::mutex m_mutex;
+		std::mutex m_queueMutex;
 
 		std::thread m_workerThread;
 		std::atomic<bool> m_running = true;
 	};
+
 
 	template <int ThreadID>
 	inline std::shared_ptr<LogThread> initLogThread()
