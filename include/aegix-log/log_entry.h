@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <sstream>
+#include <thread>
 
 namespace Aegix::Log
 {
@@ -13,14 +14,15 @@ namespace Aegix::Log
 		Warn,
 		Fatal
 	};
-	
+
 	using enum Severity;
 
 	class LogEntry
 	{
 	public:
 		LogEntry(Severity severity)
-			: m_severity{ severity }, m_time{ std::chrono::system_clock::now() }
+			: m_severity{ severity }, m_time{ std::chrono::system_clock::now() },
+			  m_threadId{ std::this_thread::get_id() }
 		{
 		}
 
@@ -41,6 +43,7 @@ namespace Aegix::Log
 		Severity severity() const { return m_severity; }
 		std::chrono::system_clock::time_point time() const { return m_time; }
 		std::string message() const { return m_stream.str(); }
+		std::thread::id threadId() const { return m_threadId; }
 
 		LogEntry& ref() { return *this; }
 
@@ -49,5 +52,6 @@ namespace Aegix::Log
 
 		Severity m_severity;
 		std::chrono::system_clock::time_point m_time;
+		std::thread::id m_threadId;
 	};
-} // namespace Aegix
+} // namespace Aegix::Log

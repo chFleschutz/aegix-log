@@ -14,9 +14,15 @@ namespace Aegix::Log
 			auto ms = localTime.time_since_epoch() % std::chrono::seconds(60);
 			float seconds = std::chrono::duration<float>(ms).count();
 
-			return std::format("{:%Y-%m-%d %H:%M:}{:0>6.3f} | {:<5} | {}",
+			// Convert thread id to printable string
+			std::ostringstream threadId;
+			threadId << entry.threadId();
+
+			// Format: YYYY-MM-DD HH:MM:SS.sss [ThreadID] Severity | Message
+			return std::format("{:%Y-%m-%d %H:%M:}{:0>6.3f} [{:0>5}] {:<5} | {}",
 				localTime,
 				seconds,
+				threadId.str(),
 				toString(entry.severity()),
 				entry.message());
 		}

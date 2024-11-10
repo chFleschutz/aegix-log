@@ -2,6 +2,8 @@
 
 #include "aegix-log/log_entry.h"
 
+#include <string>
+
 namespace Aegix::Log
 {
 	inline std::string_view toString(Severity severity)
