@@ -1,6 +1,6 @@
 # Aegix-Log
 
-Simple and fast C++20 logging library with no dependencies
+Simple and fast header-only C++20 logging library with no dependencies.
 
 ![aegix-log-console](https://github.com/user-attachments/assets/01104779-6d63-4e40-8967-43af0909aedf)
 
@@ -8,30 +8,36 @@ Simple and fast C++20 logging library with no dependencies
 
 - Fast
 - Header-only
-- Stream based logging
-- Thread-Safe
-- Asynchronous logging
-- Log filtering at runtime
-- Exclude specific log levels from builds easily
+- Stream-based logging
+- Thread-safe
+- Asynchronous logging for improved performance
+- Runtime log filtering
+- Easily exclude specific log levels from builds
+- Log to multiple destinations
+- Support for multiple loggers
+- Custom sink support for logging to custom destinations 
 
 ## Getting Started
 
-The library is header-only, its enough to copy the [include](include/) folder to your project.
+The library requires a C++20 compiler. 
 
-Alternatively you can add the library using CMake:
+Since it's header-only, simply copy the [include](include/) folder to your project.
+
+Alternatively you can add the library using cmake:
+
 1. Clone the repo
 ```bash
 git clone https://github.com/chFleschutz/aegix-log.git
 ```
-2. Add the subdirectory in CMake and link the library to automatically set the include paths
+2. Add the subdirectory in your projects 'CMakeLists.txt' file and link the library to automatically set the include paths
 ```cmake
-add_subdirectory(lib/aegix-log)
-target_link_libraries(MyApp PRIVATE Aegix::Log)
+add_subdirectory(aegix-log)
+target_link_libraries(MyProject PRIVATE Aegix::Log)
 ```
 
 ## Examples
 
-See the [examples](examples/) folder for full example projects
+See the [examples](examples/) folder for full example projects.
 
 **Basic usage**
 
