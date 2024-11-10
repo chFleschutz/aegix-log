@@ -48,14 +48,14 @@
 
 
 // Logging macros
-#define _ALOG_(id, severity) Aegix::Log::instance<id>() += Aegix::LogEntry(severity)
+#define _ALOG_(id, severity) Aegix::Log::instance<id>() += Aegix::Log::LogEntry(severity)
 
 #define ALOG_(id, severity) _ALOG_IF_ALL_ _ALOG_(id, severity)
-#define ALOG_FATAL_(id)		_ALOG_IF_FATAL_ ALOG_(id, Aegix::Severity::Fatal)
-#define ALOG_WARN_(id)		_ALOG_IF_WARN_ ALOG_(id, Aegix::Severity::Warn)
-#define ALOG_INFO_(id)		_ALOG_IF_INFO_ ALOG_(id, Aegix::Severity::Info)
-#define ALOG_DEBUG_(id)		_ALOG_IF_DEBUG_ ALOG_(id, Aegix::Severity::Debug)
-#define ALOG_TRACE_(id)		_ALOG_IF_TRACE_ ALOG_(id, Aegix::Severity::Trace)
+#define ALOG_FATAL_(id)		_ALOG_IF_FATAL_ ALOG_(id, Aegix::Log::Severity::Fatal)
+#define ALOG_WARN_(id)		_ALOG_IF_WARN_ ALOG_(id, Aegix::Log::Severity::Warn)
+#define ALOG_INFO_(id)		_ALOG_IF_INFO_ ALOG_(id, Aegix::Log::Severity::Info)
+#define ALOG_DEBUG_(id)		_ALOG_IF_DEBUG_ ALOG_(id, Aegix::Log::Severity::Debug)
+#define ALOG_TRACE_(id)		_ALOG_IF_TRACE_ ALOG_(id, Aegix::Log::Severity::Trace)
 
 #define ALOG(severity) ALOG_(Aegix::Log::DEFAULT_LOGGER, severity)
 #define ALOG_FATAL	   ALOG_FATAL_(Aegix::Log::DEFAULT_LOGGER)

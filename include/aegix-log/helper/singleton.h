@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-namespace Aegix
+namespace Aegix::Log
 {
 	/// @brief Base class for singletons
 	/// @tparam T Class type of the derived class for casting the instance

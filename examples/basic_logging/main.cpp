@@ -13,8 +13,8 @@
 int main()
 {
 	// Initialize default logger
-	Aegix::Log::init(Aegix::Severity::Trace) // Show all log messages
-		.addSink<Aegix::ConsoleSink>();
+	Aegix::Log::init(Aegix::Log::Severity::Trace) // Show all log messages
+		.addSink<Aegix::Log::ConsoleSink>();
 
 	// Basic logging
 	ALOG_FATAL << "This is a critical message";
@@ -23,8 +23,8 @@ int main()
 	ALOG_DEBUG << "This is a debug message";
 	ALOG_TRACE << "This is a trace message";
 
-	ALOG(Aegix::Severity::Fatal) << "This is an explicit critical message";
-	ALOG(Aegix::Severity::Info) << "This is an explicit info message";
+	ALOG(Aegix::Log::Severity::Fatal) << "This is an explicit critical message";
+	ALOG(Aegix::Log::Severity::Info) << "This is an explicit info message";
 
 	// Formatted logging
 	int answer = 42;
@@ -37,7 +37,7 @@ int main()
 	ALOG_INFO << "pi is " << std::setprecision(1) << 3.14159 << " i guess";
 
 	// Severity threshold
-	Aegix::Log::instance().setSeverityThreshold(Aegix::Severity::Warn);
+	Aegix::Log::instance().setSeverityThreshold(Aegix::Log::Severity::Warn);
 	ALOG_FATAL << "This is a critical message";
 	ALOG_WARN << "This is a warning message";
 	ALOG_INFO << "This is an info message";	 // Excluded

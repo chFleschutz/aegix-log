@@ -12,7 +12,7 @@
 int main()
 {
 	Aegix::Log::init() //
-		.addSink<Aegix::ConsoleSink>();
+		.addSink<Aegix::Log::ConsoleSink>();
 
 	constexpr int numThreads = 5;
 	constexpr int numMessages = 20;

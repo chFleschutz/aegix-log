@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-namespace Aegix
+namespace Aegix::Log
 {
 	class ConsoleSink : public LogSink
 	{

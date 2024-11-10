@@ -7,7 +7,7 @@
 #include <filesystem>
 #include <fstream>
 
-namespace Aegix
+namespace Aegix::Log
 {
 	class FileSink : public LogSink
 	{

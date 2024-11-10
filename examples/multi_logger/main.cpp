@@ -17,20 +17,20 @@ enum LogID
 int main()
 {
 	// Default logger
-	Aegix::Log::init(Aegix::Severity::Trace) // Show all log messages
-		.addSink<Aegix::ConsoleSink>();
+	Aegix::Log::init(Aegix::Log::Severity::Trace) // Show all log messages
+		.addSink<Aegix::Log::ConsoleSink>();
 
 	// Secondary logger
 	std::filesystem::path logFile = std::filesystem::current_path() / "log.txt";
-	Aegix::Log::init<SecondaryLog>(Aegix::Severity::Info) // 
-		.addSink<Aegix::ConsoleSink>()
-		.addSink<Aegix::FileSink>(logFile);
+	Aegix::Log::init<SecondaryLog>(Aegix::Log::Severity::Info) // 
+		.addSink<Aegix::Log::ConsoleSink>()
+		.addSink<Aegix::Log::FileSink>(logFile);
 
 	// Print to default logger
 	ALOG_INFO << "Secondary log file: " << logFile;
 	ALOG_FATAL << "This is a fatal message";
 	ALOG_INFO_(DefaultLog) << "This is an info message";
-	ALOG_(DefaultLog, Aegix::Severity::Debug) << "This is a debug message";
+	ALOG_(DefaultLog, Aegix::Log::Severity::Debug) << "This is a debug message";
 
 	// Print to secondary logger
 	ALOG_FATAL_(SecondaryLog) << "Fatal message to secondary log";

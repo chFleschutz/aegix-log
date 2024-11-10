@@ -3,7 +3,7 @@
 #include <chrono>
 #include <sstream>
 
-namespace Aegix
+namespace Aegix::Log
 {
 	enum class Severity
 	{

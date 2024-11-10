@@ -3,7 +3,7 @@
 #include "aegix-log/formatter/formatter.h"
 #include "aegix-log/log_entry.h"
 
-namespace Aegix
+namespace Aegix::Log
 {
 	class LogSink
 	{
