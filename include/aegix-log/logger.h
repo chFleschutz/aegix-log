@@ -5,8 +5,10 @@
 #include "aegix-log/log_thread.h"
 #include "aegix-log/sinks/log_sink.h"
 
+#include <functional>
 #include <memory>
 #include <mutex>
+#include <type_traits>
 #include <vector>
 
 namespace Aegix::Log
@@ -31,9 +33,9 @@ namespace Aegix::Log
 		}
 
 		template <typename T, typename... Args>
+			requires std::is_base_of_v<LogSink, T>
 		Logger& addSink(Args&&... args)
 		{
-			static_assert(std::is_base_of_v<LogSink, T>, "T must derive from LogSink");
 			std::lock_guard lock(m_sinkMutex);
 			m_sinks.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
 			return *this;
