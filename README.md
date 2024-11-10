@@ -2,6 +2,8 @@
 
 Simple and fast C++20 logging library with no dependencies
 
+![aegix-log-console](https://github.com/user-attachments/assets/01104779-6d63-4e40-8967-43af0909aedf)
+
 ## Features
 
 - Fast
