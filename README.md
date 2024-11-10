@@ -2,7 +2,7 @@
 
 Simple and fast header-only C++20 logging library with no dependencies.
 
-![aegix-log-console](https://github.com/user-attachments/assets/01104779-6d63-4e40-8967-43af0909aedf)
+![aegix-log-console](https://github.com/user-attachments/assets/667fea57-cf1a-4dbd-a289-bf36af990a4e)
 
 ## Features
 
