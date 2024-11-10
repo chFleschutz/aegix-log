@@ -15,7 +15,7 @@ namespace Aegix::Log
 	class Logger : public Singleton<Logger<_LogID>>
 	{
 	public:
-		void operator+=(LogEntry&& entry)
+		void operator+=(LogEntry entry)
 		{
 			if (entry.severity() < m_severityThreshold)
 				return;
@@ -63,7 +63,7 @@ namespace Aegix::Log
 		std::mutex m_sinkMutex;
 
 		// Keep this last to ensure it's destroyed first
-		TaskToken m_taskToken;
+		Token m_taskToken;
 
 		template <int LogID>
 		friend Logger<LogID>& initLogger(std::shared_ptr<LogThread>, Severity);

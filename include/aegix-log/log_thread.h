@@ -1,6 +1,6 @@
 #pragma once
 
-#include "aegix-log/helper/singleton.h"
+#include "aegix-log/helper/token.h"
 #include "aegix-log/log_entry.h"
 
 #include <atomic>
@@ -11,44 +11,6 @@
 
 namespace Aegix::Log
 {
-	class TaskToken
-	{
-	public:
-		TaskToken() = default;
-		TaskToken(const TaskToken&) = delete;
-		TaskToken(TaskToken&&) = delete;
-		~TaskToken() { waitPending(); }
-
-		TaskToken& operator=(const TaskToken&) = delete;
-		TaskToken& operator=(TaskToken&&) = delete;
-
-		void waitPending()
-		{
-			std::unique_lock lock(m_queueMutex);
-			m_condition.wait(lock, [this] { return m_pendingCount == 0; });
-		}
-
-		void queued()
-		{
-			std::lock_guard lock(m_queueMutex);
-			m_pendingCount++;
-		}
-
-		void finished()
-		{
-			std::lock_guard lock(m_queueMutex);
-			m_pendingCount--;
-			if (m_pendingCount == 0)
-				m_condition.notify_all();
-		}
-
-	private:
-		uint32_t m_pendingCount = 0;
-		std::condition_variable m_condition;
-		std::mutex m_queueMutex;
-	};
-
-
 	class LogThread
 	{
 	public:
@@ -56,7 +18,7 @@ namespace Aegix::Log
 		{
 			LogEntry entry;
 			std::function<void(const LogEntry&)> sinkFunc;
-			TaskToken& token;
+			Token& token;
 		};
 
 		LogThread() { m_workerThread = std::thread(&LogThread::processTasks, this); }
@@ -65,7 +27,7 @@ namespace Aegix::Log
 		~LogThread()
 		{
 			m_running = false;
-			m_condition.notify_all();
+			m_taskAvailable.notify_all();
 			if (m_workerThread.joinable())
 				m_workerThread.join();
 		}
@@ -78,11 +40,12 @@ namespace Aegix::Log
 			if (!m_running)
 				return;
 
-			task.token.queued();
-
-			std::lock_guard lock(m_queueMutex);
-			m_taskQueue.push(std::move(task));
-			m_condition.notify_one();
+			task.token.increment();
+			{
+				std::lock_guard lock(m_queueMutex);
+				m_taskQueue.push(std::move(task));
+			}
+			m_taskAvailable.notify_one();
 		}
 
 	private:
@@ -91,8 +54,9 @@ namespace Aegix::Log
 			while (m_running)
 			{
 				std::unique_lock lock(m_queueMutex);
-				m_condition.wait(lock, [this] { return !m_taskQueue.empty() || !m_running; });
-				if (!m_running)
+				m_taskAvailable.wait(lock, [this] { return !m_taskQueue.empty() || !m_running; });
+
+				if (!m_running && m_taskQueue.empty())
 					break;
 
 				Task task = std::move(m_taskQueue.front());
@@ -100,12 +64,12 @@ namespace Aegix::Log
 				lock.unlock();
 
 				task.sinkFunc(task.entry);
-				task.token.finished();
+				task.token.decrement();
 			}
 		}
 
 		std::queue<Task> m_taskQueue;
-		std::condition_variable m_condition;
+		std::condition_variable m_taskAvailable;
 		std::mutex m_queueMutex;
 
 		std::thread m_workerThread;
