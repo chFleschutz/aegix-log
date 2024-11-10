@@ -29,7 +29,7 @@ Alternatively you can add the library using cmake:
 ```bash
 git clone https://github.com/chFleschutz/aegix-log.git
 ```
-2. Add the subdirectory in your projects 'CMakeLists.txt' file and link the library to automatically set the include paths
+2. Add the subdirectory of the library in your projects `CMakeLists.txt` file and link it to automatically set the include paths
 ```cmake
 add_subdirectory(aegix-log)
 target_link_libraries(MyProject PRIVATE Aegix::Log)
