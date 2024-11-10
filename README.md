@@ -6,7 +6,7 @@ Simple and fast C++20 logging library with no dependencies
 
 - Fast
 - Header-only
-- Stream based
+- Stream based logging
 - Thread-Safe
 - Asynchronous logging
 - Log filtering at runtime
