@@ -43,4 +43,4 @@ namespace Aegix::Log
 		std::condition_variable m_taskAvailable;
 		std::mutex m_queueMutex;
 	};
-}
+} // namespace Aegix::Log

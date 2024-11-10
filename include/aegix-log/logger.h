@@ -1,5 +1,6 @@
 #pragma once
 
+#include "aegix-log/formatter/default_formatter.h"
 #include "aegix-log/helper/singleton.h"
 #include "aegix-log/log_entry.h"
 #include "aegix-log/log_thread.h"
@@ -32,12 +33,14 @@ namespace Aegix::Log
 			}
 		}
 
-		template <typename T, typename... Args>
-			requires std::is_base_of_v<LogSink, T>
+		template <typename SinkType, typename FormatterType = DefaultFormatter, typename... Args>
+			requires std::derived_from<SinkType, LogSink> and std::derived_from<FormatterType, Formatter>
 		Logger& addSink(Args&&... args)
 		{
+			auto formatter = std::make_unique<FormatterType>();
+			auto sink = std::make_unique<SinkType>(std::move(formatter), std::forward<Args>(args)...);
 			std::lock_guard lock(m_sinkMutex);
-			m_sinks.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
+			m_sinks.emplace_back(std::move(sink));
 			return *this;
 		}
 

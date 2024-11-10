@@ -1,6 +1,5 @@
 #pragma once
 
-#include "aegix-log/format.h"
 #include "aegix-log/log.h"
 #include "aegix-log/sinks/log_sink.h"
 
@@ -13,7 +12,8 @@ namespace Aegix
 	class FileSink : public LogSink
 	{
 	public:
-		FileSink(const std::filesystem::path& filepath)
+		FileSink(std::unique_ptr<Log::Formatter> formatter, const std::filesystem::path& filepath)
+			: LogSink(std::move(formatter))
 		{
 			if (filepath.has_parent_path())
 			{
@@ -23,7 +23,7 @@ namespace Aegix
 				{
 					assert(false && "Failed to create directory for log-file");
 					LOG_FATAL << "Failed to create directory for log-file: " << filepath.parent_path()
-								 << " Error: " << error.message();
+							  << " Error: " << error.message();
 				}
 			}
 
@@ -49,7 +49,7 @@ namespace Aegix
 			if (!m_file.is_open())
 				return;
 
-			m_file << Log::formatText(entry) << "\n";
+			m_file << format(entry) << "\n";
 		}
 
 	private:

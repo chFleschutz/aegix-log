@@ -5,7 +5,6 @@
 
 #include <aegix-log/log.h>
 #include <aegix-log/sinks/console_sink.h>
-#include <aegix-log/sinks/file_sink.h>
 
 #include <filesystem>
 #include <iomanip>

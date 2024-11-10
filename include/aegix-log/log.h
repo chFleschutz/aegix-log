@@ -83,7 +83,7 @@ namespace Aegix::Log
 	{
 		if constexpr (ThreadID == NO_THREAD)
 			return initLogger<LogID>(nullptr, severityThreshold);
-		
+
 		auto logThread = initLogThread<ThreadID>();
 		return initLogger<LogID>(logThread, severityThreshold);
 	}
