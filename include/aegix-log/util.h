@@ -6,7 +6,7 @@
 
 namespace Aegix::Log
 {
-	inline std::string_view toString(Severity severity)
+	inline auto toString(Severity severity) -> std::string_view
 	{
 		switch (severity)
 		{

@@ -3,59 +3,57 @@
 #include "aegix-log/log_entry.h"
 #include "aegix-log/logger.h"
 
-#define _ALOG_DISABLE_LINE_ \
-	if (true)               \
-	{                       \
-		;                   \
-	}                       \
+#define ALOG_DISABLE_LINE \
+	if (true)             \
+	{                     \
+		;                 \
+	}                     \
 	else
 
 #ifdef AEGIX_LOG_DISABLE_ALL
-#define _ALOG_IF_ALL_ _ALOG_DISABLE_LINE_
+#define ALOG_IF_ALL ALOG_DISABLE_LINE
 #else
-#define _ALOG_IF_ALL_
+#define ALOG_IF_ALL
 #endif
 
 #ifdef AEGIX_LOG_DISABLE_FATAL
-#define _ALOG_IF_FATAL_ _ALOG_DISABLE_LINE_
+#define ALOG_IF_FATAL ALOG_DISABLE_LINE
 #else
-#define _ALOG_IF_FATAL_
+#define ALOG_IF_FATAL
 #endif
 
 #ifdef AEGIX_LOG_DISABLE_WARN
-#define _ALOG_IF_WARN_ _ALOG_DISABLE_LINE_
+#define ALOG_IF_WARN ALOG_DISABLE_LINE
 #else
-#define _ALOG_IF_WARN_
+#define ALOG_IF_WARN
 #endif
 
 #ifdef AEGIX_LOG_DISABLE_INFO
-#define _ALOG_IF_INFO_ _ALOG_DISABLE_LINE_
+#define ALOG_IF_INFO ALOG_DISABLE_LINE
 #else
-#define _ALOG_IF_INFO_
+#define ALOG_IF_INFO
 #endif
 
 #ifdef AEGIX_LOG_DISABLE_DEBUG
-#define _ALOG_IF_DEBUG_ _ALOG_DISABLE_LINE_
+#define ALOG_IF_DEBUG ALOG_DISABLE_LINE
 #else
-#define _ALOG_IF_DEBUG_
+#define ALOG_IF_DEBUG
 #endif
 
 #ifdef AEGIX_LOG_DISABLE_TRACE
-#define _ALOG_IF_TRACE_ _ALOG_DISABLE_LINE_
+#define ALOG_IF_TRACE ALOG_DISABLE_LINE
 #else
-#define _ALOG_IF_TRACE_
+#define ALOG_IF_TRACE
 #endif
 
 
 // Logging macros
-#define _ALOG_(id, severity) Aegix::Log::instance<id>() += Aegix::Log::LogEntry(severity)
-
-#define ALOG_(id, severity) _ALOG_IF_ALL_ _ALOG_(id, severity)
-#define ALOG_FATAL_(id)		_ALOG_IF_FATAL_ ALOG_(id, Aegix::Log::Severity::Fatal)
-#define ALOG_WARN_(id)		_ALOG_IF_WARN_ ALOG_(id, Aegix::Log::Severity::Warn)
-#define ALOG_INFO_(id)		_ALOG_IF_INFO_ ALOG_(id, Aegix::Log::Severity::Info)
-#define ALOG_DEBUG_(id)		_ALOG_IF_DEBUG_ ALOG_(id, Aegix::Log::Severity::Debug)
-#define ALOG_TRACE_(id)		_ALOG_IF_TRACE_ ALOG_(id, Aegix::Log::Severity::Trace)
+#define ALOG_(id, severity) ALOG_IF_ALL Aegix::Log::instance<id>() += Aegix::Log::LogEntry(severity)
+#define ALOG_FATAL_(id)		ALOG_IF_FATAL ALOG_(id, Aegix::Log::Severity::Fatal)
+#define ALOG_WARN_(id)		ALOG_IF_WARN ALOG_(id, Aegix::Log::Severity::Warn)
+#define ALOG_INFO_(id)		ALOG_IF_INFO ALOG_(id, Aegix::Log::Severity::Info)
+#define ALOG_DEBUG_(id)		ALOG_IF_DEBUG ALOG_(id, Aegix::Log::Severity::Debug)
+#define ALOG_TRACE_(id)		ALOG_IF_TRACE ALOG_(id, Aegix::Log::Severity::Trace)
 
 #define ALOG(severity) ALOG_(Aegix::Log::DEFAULT_LOGGER, severity)
 #define ALOG_FATAL	   ALOG_FATAL_(Aegix::Log::DEFAULT_LOGGER)
@@ -79,7 +77,7 @@ namespace Aegix::Log
 	constexpr int NO_THREAD = -1;
 
 	template <int LogID = DEFAULT_LOGGER, int ThreadID = DEFAULT_THREAD>
-	inline Logger<LogID>& init(Severity severityThreshold = Severity::Debug)
+	inline auto init(Severity severityThreshold = Severity::Debug) -> Logger<LogID>&
 	{
 		if constexpr (ThreadID == NO_THREAD)
 			return initLogger<LogID>(nullptr, severityThreshold);
@@ -89,7 +87,7 @@ namespace Aegix::Log
 	}
 
 	template <int LogID = DEFAULT_LOGGER>
-	inline Logger<LogID>& instance()
+	inline auto instance() -> Logger<LogID>&
 	{
 		return Logger<LogID>::instance();
 	}

@@ -8,7 +8,7 @@ namespace Aegix::Log
 	class DefaultFormatter : public Formatter
 	{
 	public:
-		std::string format(const LogEntry& entry) override
+		auto format(const LogEntry& entry) -> std::string override 
 		{
 			auto localTime = std::chrono::current_zone()->to_local(entry.time());
 			auto ms = localTime.time_since_epoch() % std::chrono::seconds(60);

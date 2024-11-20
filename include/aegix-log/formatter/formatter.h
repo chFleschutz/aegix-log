@@ -12,9 +12,9 @@ namespace Aegix::Log
 		Formatter(Formatter&&) = delete;
 		virtual ~Formatter() = default;
 
-		Formatter& operator=(const Formatter&) = delete;
-		Formatter& operator=(Formatter&&) = delete;
+		auto operator=(const Formatter&) -> Formatter& = delete;
+		auto operator=(Formatter&&) -> Formatter& = delete;
 
-		virtual std::string format(const LogEntry& entry) = 0;
+		virtual auto format(const LogEntry& entry) -> std::string = 0;
 	};
 } // namespace Aegix::Log

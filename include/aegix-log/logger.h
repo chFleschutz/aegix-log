@@ -14,8 +14,8 @@
 
 namespace Aegix::Log
 {
-	template <int _LogID>
-	class Logger : public Singleton<Logger<_LogID>>
+	template <int ID>
+	class Logger : public Singleton<Logger<ID>>
 	{
 	public:
 		void operator+=(LogEntry entry)
@@ -35,7 +35,7 @@ namespace Aegix::Log
 
 		template <typename SinkType, typename FormatterType = DefaultFormatter, typename... Args>
 			requires std::derived_from<SinkType, LogSink> and std::derived_from<FormatterType, Formatter>
-		Logger& addSink(Args&&... args)
+		auto addSink(Args&&... args) -> Logger<ID>&
 		{
 			auto formatter = std::make_unique<FormatterType>();
 			auto sink = std::make_unique<SinkType>(std::move(formatter), std::forward<Args>(args)...);
@@ -51,13 +51,13 @@ namespace Aegix::Log
 				sink->log(entry);
 		}
 
-		Severity severityThreshold() const { return m_severityThreshold; }
-
+		[[nodiscard]] auto severityThreshold() const -> Severity { return m_severityThreshold; }
+		
 		void setSeverityThreshold(Severity severity) { m_severityThreshold = severity; }
 
 	private:
 		explicit Logger(std::shared_ptr<LogThread> logThread, Severity severityThreshold)
-			: Singleton<Logger<_LogID>>(), m_logThread{ logThread }, m_severityThreshold{ severityThreshold }
+			: Singleton<Logger<ID>>(), m_logThread{ std::move(logThread) }, m_severityThreshold{ severityThreshold }
 		{
 		}
 
@@ -70,14 +70,14 @@ namespace Aegix::Log
 		// Keep this last to ensure it's destroyed first
 		Token m_taskToken;
 
-		template <int LogID>
-		friend Logger<LogID>& initLogger(std::shared_ptr<LogThread>, Severity);
+		template <int LoggerID>
+		friend auto initLogger(std::shared_ptr<LogThread>, Severity) -> Logger<LoggerID>&;
 	};
 
-	template <int LogID>
-	inline Logger<LogID>& initLogger(std::shared_ptr<LogThread> logThread, Severity severityThreshold)
+	template <int LoggerID>
+	inline auto initLogger(std::shared_ptr<LogThread> logThread, Severity severityThreshold) -> Logger<LoggerID>&
 	{
-		static Logger<LogID> logger(logThread, severityThreshold);
+		static Logger<LoggerID> logger(logThread, severityThreshold);
 		return logger;
 	}
 } // namespace Aegix::Log

@@ -12,7 +12,7 @@
 #include <aegix-log/log.h>
 #include <aegix-log/sinks/console_sink.h>
 
-int main()
+auto main() -> int
 {
 	Aegix::Log::init(Aegix::Log::Trace) // Show all log messages
 		.addSink<Aegix::Log::ConsoleSink>();

@@ -32,8 +32,8 @@ namespace Aegix::Log
 				m_workerThread.join();
 		}
 
-		LogThread& operator=(const LogThread&) = delete;
-		LogThread& operator=(LogThread&&) = delete;
+		auto operator=(const LogThread&) -> LogThread& = delete;
+		auto operator=(LogThread&&) -> LogThread& = delete;
 
 		void operator+=(Task&& task)
 		{
@@ -78,7 +78,7 @@ namespace Aegix::Log
 
 
 	template <int ThreadID>
-	inline std::shared_ptr<LogThread> initLogThread()
+	inline auto initLogThread() -> std::shared_ptr<LogThread>
 	{
 		static std::shared_ptr<LogThread> logThread = std::make_shared<LogThread>();
 		return logThread;

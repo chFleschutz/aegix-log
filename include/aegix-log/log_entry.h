@@ -30,22 +30,20 @@ namespace Aegix::Log
 		LogEntry(LogEntry&&) = default;
 		~LogEntry() = default;
 
-		LogEntry& operator=(const LogEntry&) = delete;
-		LogEntry& operator=(LogEntry&&) = default;
+		auto operator=(const LogEntry&) -> LogEntry& = delete;
+		auto operator=(LogEntry&&) -> LogEntry& = default;
 
 		template <typename T>
-		LogEntry&& operator<<(const T& value)
+		auto operator<<(const T& value) -> LogEntry&&
 		{
 			m_stream << value;
 			return static_cast<LogEntry&&>(*this);
 		}
 
-		Severity severity() const { return m_severity; }
-		std::chrono::system_clock::time_point time() const { return m_time; }
-		std::string message() const { return m_stream.str(); }
-		std::thread::id threadId() const { return m_threadId; }
-
-		LogEntry& ref() { return *this; }
+		[[nodiscard]] auto severity() const -> Severity{ return m_severity; }
+		[[nodiscard]] auto time() const -> std::chrono::system_clock::time_point { return m_time; }
+		[[nodiscard]] auto message() const -> std::string { return m_stream.str(); }
+		[[nodiscard]] auto threadId() const -> std::thread::id { return m_threadId; }
 
 	private:
 		std::ostringstream m_stream;

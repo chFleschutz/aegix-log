@@ -20,10 +20,10 @@ namespace Aegix::Log
 		Singleton(const Singleton&) = delete;
 		Singleton(Singleton&&) = delete;
 
-		Singleton& operator=(const Singleton&) = delete;
-		Singleton& operator=(Singleton&&) = delete;
+		auto operator=(const Singleton&) -> Singleton& = delete;
+		auto operator=(Singleton&&) -> Singleton& = delete;
 
-		static T& instance() { return *s_instance; }
+		static auto instance() -> T& { return *s_instance; }
 
 	protected:
 		Singleton()

@@ -9,8 +9,9 @@
 #include <filesystem>
 #include <iomanip>
 #include <string>
+#include <numbers>
 
-int main()
+auto main() -> int
 {
 	// Initialize default logger
 	Aegix::Log::init(Aegix::Log::Trace) // Show all log messages
@@ -31,10 +32,10 @@ int main()
 	std::string str = "Im a string";
 	ALOG_INFO;
 	ALOG_INFO << std::setw(20) << std::setfill('-') << " 20->";
-	ALOG_INFO << "The answer is " << answer << " and pi is " << 3.14159 << "!";
+	ALOG_INFO << "The answer is " << answer << " and pi is " << std::numbers::pi << "!";
 	ALOG_INFO << str << " and " << std::filesystem::path("im/a/path");
 	ALOG_INFO << std::setw(10) << std::setfill('0') << 42 << " is the answer";
-	ALOG_INFO << "pi is " << std::setprecision(1) << 3.14159 << " i guess";
+	ALOG_INFO << "pi is " << std::setprecision(1) << std::numbers::pi << " i guess";
 
 	// Severity threshold
 	Aegix::Log::instance().setSeverityThreshold(Aegix::Log::Severity::Warn);

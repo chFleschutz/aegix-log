@@ -14,7 +14,7 @@ enum LogID
 	SecondaryLog
 };
 
-int main()
+auto main() -> int
 {
 	// Default logger
 	Aegix::Log::init(Aegix::Log::Trace) // Show all log messages

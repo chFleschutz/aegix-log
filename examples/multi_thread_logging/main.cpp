@@ -9,7 +9,7 @@
 #include <thread>
 #include <vector>
 
-int main()
+auto main() -> int
 {
 	Aegix::Log::init() //
 		.addSink<Aegix::Log::ConsoleSink>();

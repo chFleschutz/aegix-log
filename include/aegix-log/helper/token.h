@@ -15,8 +15,8 @@ namespace Aegix::Log
 		Token(Token&&) = delete;
 		~Token() { waitPending(); }
 
-		Token& operator=(const Token&) = delete;
-		Token& operator=(Token&&) = delete;
+		auto operator=(const Token&) -> Token& = delete;
+		auto operator=(Token&&) -> Token& = delete;
 
 		void waitPending()
 		{

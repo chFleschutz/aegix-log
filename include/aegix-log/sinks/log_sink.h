@@ -13,14 +13,17 @@ namespace Aegix::Log
 		LogSink(LogSink&&) = delete;
 		virtual ~LogSink() = default;
 
-		LogSink& operator=(const LogSink&) = delete;
-		LogSink& operator=(LogSink&&) = delete;
+		auto operator=(const LogSink&) -> LogSink& = delete;
+		auto operator=(LogSink&&) -> LogSink& = delete;
 
 		virtual void log(const LogEntry& entry) = 0;
 
-		std::string format(const LogEntry& entry) const { return m_formatter->format(entry); }
+		[[nodiscard]] auto format(const LogEntry& entry) const -> std::string
+		{
+			return m_formatter->format(entry);
+		}
 
 	protected:
 		std::unique_ptr<Log::Formatter> m_formatter;
 	};
-} // namespace Aegix
+} // namespace Aegix::Log
