@@ -1,5 +1,38 @@
----
-Checks: >
+#
+# Clang-tidy configuration 
+# List of checks: https://clang.llvm.org/extra/clang-tidy/checks/list.html
+#
+# Checks removed:
+# 
+# -cppcoreguidelines-avoid-const-or-ref-data-members
+#   TODO: Reevaluate this check
+#   Removed because this caused issues which need to be resolved before re-enabling
+#
+# -cppcoreguidelines-avoid-magic-numbers
+#   Removed because it is too strict
+#   This check causes too many false positives, especially when using mathematical formulas
+# 
+# -cppcoreguidelines-macro-usage
+#   TODO: Reevaluate this check
+#   Removed because this project is based on macros and needs to be fixed before re-enabling
+#
+# -cppcoreguidelines-pro-bounds-array-to-pointer-decay
+#   TODO: Reevaluate this check
+#   Removed because this check clashes with certain template functions and needs to be fixed before re-enabling
+#
+# -misc-const-correctness
+#   Removed because it causes too much noise
+#   This check flags any variable that can be const, which is not always desirable 
+#
+# -misc-include-cleaner
+#   TODO: Reevaluate this check
+#   This was removed to reduce include dependencies, but it should be re-evaluated
+#
+# -performance-enum-size
+#   Removed because it is too strict
+#   This check flags basicly any enum (that is not a byte), which is not desirable
+
+Checks: 
     bugprone-*,
     clang-analyzer-*,
     cppcoreguidelines-*,
