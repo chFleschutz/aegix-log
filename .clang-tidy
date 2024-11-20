@@ -2,7 +2,12 @@
 Checks: >
     bugprone-*,
     clang-analyzer-*,
+    cppcoreguidelines-*,
     modernize-*,
+    -cppcoreguidelines-avoid-magic-numbers,
+    -cppcoreguidelines-macro-usage,
+    -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+    -cppcoreguidelines-avoid-const-or-ref-data-members
 
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'

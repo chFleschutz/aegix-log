@@ -23,7 +23,7 @@ namespace Aegix::Log
 			return m_formatter->format(entry);
 		}
 
-	protected:
+	private:
 		std::unique_ptr<Log::Formatter> m_formatter;
 	};
 } // namespace Aegix::Log

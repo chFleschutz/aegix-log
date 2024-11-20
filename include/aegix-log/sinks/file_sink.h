@@ -22,7 +22,7 @@ namespace Aegix::Log
 				if (error)
 				{
 					assert(false && "Failed to create directory for log-file");
-					LOG_FATAL << "Failed to create directory for log-file: " << filepath.parent_path()
+					ALOG_FATAL << "Failed to create directory for log-file: " << filepath.parent_path()
 							  << " Error: " << error.message();
 				}
 			}
@@ -31,7 +31,7 @@ namespace Aegix::Log
 			if (!m_file.is_open())
 			{
 				assert(false && "Failed to open log-file");
-				LOG_FATAL << "Failed to open log-file: " << filepath;
+				ALOG_FATAL << "Failed to open log-file: " << filepath;
 			}
 		}
 
@@ -43,6 +43,11 @@ namespace Aegix::Log
 				m_file.close();
 			}
 		}
+		
+		FileSink(const FileSink&) = delete;
+		FileSink(FileSink&&) = delete;
+		auto operator=(const FileSink&) -> FileSink& = delete;
+		auto operator=(FileSink&&) -> FileSink& = delete;
 
 		void log(const LogEntry& entry) override
 		{

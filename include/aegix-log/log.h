@@ -62,13 +62,6 @@
 #define ALOG_DEBUG	   ALOG_DEBUG_(Aegix::Log::DEFAULT_LOGGER)
 #define ALOG_TRACE	   ALOG_TRACE_(Aegix::Log::DEFAULT_LOGGER)
 
-#define LOG(severity) ALOG(severity)
-#define LOG_FATAL	  ALOG_FATAL
-#define LOG_WARN	  ALOG_WARN
-#define LOG_INFO	  ALOG_INFO
-#define LOG_DEBUG	  ALOG_DEBUG
-#define LOG_TRACE	  ALOG_TRACE
-
 
 namespace Aegix::Log
 {
