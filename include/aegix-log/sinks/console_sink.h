@@ -14,7 +14,7 @@ namespace Aegix::Log
 		void log(const LogEntry& entry) override
 		{
 			auto message = format(entry);
-			switch (entry.severity())
+			switch (entry.severity)
 			{
 			case Severity::Fatal: std::cerr << "\033[41m" << message << "\033[0m\n"; break;
 			case Severity::Warn: std::cerr << "\033[33m" << message << "\033[0m\n"; break;

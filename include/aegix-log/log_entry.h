@@ -17,39 +17,47 @@ namespace Aegix::Log
 
 	using enum Severity;
 
-	class LogEntry
+	struct LogEntry
+	{
+		Severity severity;
+		std::chrono::system_clock::time_point time;
+		std::thread::id threadId;
+		std::string message;
+	};
+
+	// TODO: Move this to a separate file 
+	class LogStream
 	{
 	public:
-		LogEntry(Severity severity)
-			: m_severity{ severity }, m_time{ std::chrono::system_clock::now() },
-			  m_threadId{ std::this_thread::get_id() }
+		LogStream(Severity severity)
+			: m_entry{ severity, std::chrono::system_clock::now(), std::this_thread::get_id(), std::string() }
 		{
 		}
 
-		LogEntry(const LogEntry&) = delete;
-		LogEntry(LogEntry&&) = default;
-		~LogEntry() = default;
+		LogStream(const LogStream&) = delete;
+		LogStream(LogStream&&) = default;
+		~LogStream() = default;
 
-		auto operator=(const LogEntry&) -> LogEntry& = delete;
-		auto operator=(LogEntry&&) -> LogEntry& = default;
+		auto operator=(const LogStream&) -> LogStream& = delete;
+		auto operator=(LogStream&&) -> LogStream& = default;
 
 		template <typename T>
-		auto operator<<(const T& value) -> LogEntry&&
+		auto operator<<(const T& value) -> LogStream&
 		{
 			m_stream << value;
-			return static_cast<LogEntry&&>(*this);
+			return *this;
 		}
 
-		[[nodiscard]] auto severity() const -> Severity{ return m_severity; }
-		[[nodiscard]] auto time() const -> std::chrono::system_clock::time_point { return m_time; }
-		[[nodiscard]] auto message() const -> std::string { return m_stream.str(); }
-		[[nodiscard]] auto threadId() const -> std::thread::id { return m_threadId; }
+		// TODO: this could cause issues after entry was moved
+		[[nodiscard]] auto entry() const -> LogEntry
+		{
+			LogEntry entry = std::move(m_entry);
+			entry.message = m_stream.str();
+			return entry;
+		}
 
 	private:
 		std::ostringstream m_stream;
-
-		Severity m_severity;
-		std::chrono::system_clock::time_point m_time;
-		std::thread::id m_threadId;
+		LogEntry m_entry;
 	};
 } // namespace Aegix::Log

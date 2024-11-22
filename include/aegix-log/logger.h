@@ -18,9 +18,12 @@ namespace Aegix::Log
 	class Logger : public Singleton<Logger<ID>>
 	{
 	public:
-		void operator+=(LogEntry entry)
+
+		void operator+=(const LogStream& stream) { log(std::move(stream.entry())); }
+
+		void log(LogEntry entry)
 		{
-			if (entry.severity() < m_severityThreshold)
+			if (entry.severity < m_severityThreshold)
 				return;
 
 			if (m_logThread)
@@ -36,8 +39,10 @@ namespace Aegix::Log
 		template <typename... Args>
 		void log(Severity severity, std::format_string<Args...> fmt, Args&&... args)
 		{
-			// TODO: Improve this
-			*this += LogEntry(severity) << std::format(fmt, std::forward<Args>(args)...);
+			log({ .severity = severity,
+				.time = std::chrono::system_clock::now(),
+				.threadId = std::this_thread::get_id(),
+				.message = std::format(fmt, std::forward<Args>(args)...) });
 		}
 
 		template <typename... Args>
@@ -89,12 +94,13 @@ namespace Aegix::Log
 		}
 
 		[[nodiscard]] auto severityThreshold() const -> Severity { return m_severityThreshold; }
-		
+
 		void setSeverityThreshold(Severity severity) { m_severityThreshold = severity; }
 
 	private:
 		explicit Logger(std::shared_ptr<LogThread> logThread, Severity severityThreshold)
-			: Singleton<Logger<ID>>(), m_logThread{ std::move(logThread) }, m_severityThreshold{ severityThreshold }
+			: Singleton<Logger<ID>>(), m_logThread{ std::move(logThread) },
+			  m_severityThreshold{ severityThreshold }
 		{
 		}
 
