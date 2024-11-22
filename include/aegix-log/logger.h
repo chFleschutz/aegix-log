@@ -33,6 +33,43 @@ namespace Aegix::Log
 			}
 		}
 
+		template <typename... Args>
+		void log(Severity severity, std::format_string<Args...> fmt, Args&&... args)
+		{
+			// TODO: Improve this
+			*this += LogEntry(severity) << std::format(fmt, std::forward<Args>(args)...);
+		}
+
+		template <typename... Args>
+		void fatal(std::format_string<Args...> fmt, Args&&... args)
+		{
+			log(Severity::Fatal, fmt, std::forward<Args>(args)...);
+		}
+
+		template <typename... Args>
+		void warn(std::format_string<Args...> fmt, Args&&... args)
+		{
+			log(Severity::Warn, fmt, std::forward<Args>(args)...);
+		}
+
+		template <typename... Args>
+		void info(std::format_string<Args...> fmt, Args&&... args)
+		{
+			log(Severity::Info, fmt, std::forward<Args>(args)...);
+		}
+
+		template <typename... Args>
+		void debug(std::format_string<Args...> fmt, Args&&... args)
+		{
+			log(Severity::Debug, fmt, std::forward<Args>(args)...);
+		}
+
+		template <typename... Args>
+		void trace(std::format_string<Args...> fmt, Args&&... args)
+		{
+			log(Severity::Trace, fmt, std::forward<Args>(args)...);
+		}
+
 		template <typename SinkType, typename FormatterType = DefaultFormatter, typename... Args>
 			requires std::derived_from<SinkType, LogSink> and std::derived_from<FormatterType, Formatter>
 		auto addSink(Args&&... args) -> Logger<ID>&

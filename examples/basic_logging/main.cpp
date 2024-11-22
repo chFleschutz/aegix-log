@@ -55,5 +55,7 @@ auto main() -> int
 	ALOG::fatal("Hello World again");
 	ALOG::log(ALOG::Info, "Inform the World again");
 
+	ALOG::instance<ALOG::DEFAULT_LOGGER>().fatal("Fatal World again");
+
 	return 0;
 }

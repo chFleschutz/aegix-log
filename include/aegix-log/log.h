@@ -87,38 +87,37 @@ namespace Aegix::Log
 	template <typename... Args>
 	static void log(Severity severity, std::format_string<Args...> fmt, Args&&... args)
 	{
-		// TODO: Improve adding logEntries
-		instance() += LogEntry(severity) << std::format(fmt, std::forward<Args>(args)...);
+		instance().log(severity, fmt, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
 	static void fatal(std::format_string<Args...> fmt, Args&&... args)
 	{
-		log(Severity::Fatal, fmt, std::forward<Args>(args)...);
+		instance().fatal(fmt, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
 	static void warn(std::format_string<Args...> fmt, Args&&... args)
 	{
-		log(Severity::Warn, fmt, std::forward<Args>(args)...);
+		instance().warn(fmt, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
 	static void info(std::format_string<Args...> fmt, Args&&... args)
 	{
-		log(Severity::Info, fmt, std::forward<Args>(args)...);
+		instance().info(fmt, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
 	static void debug(std::format_string<Args...> fmt, Args&&... args)
 	{
-		log(Severity::Debug, fmt, std::forward<Args>(args)...);
+		instance().debug(fmt, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
 	static void trace(std::format_string<Args...> fmt, Args&&... args)
 	{
-		log(Severity::Trace, fmt, std::forward<Args>(args)...);
+		instance().trace(fmt, std::forward<Args>(args)...);
 	}
 } // namespace Aegix::Log
 
