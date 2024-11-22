@@ -17,11 +17,11 @@ auto main() -> int
 	Aegix::Log::init(Aegix::Log::Trace) // Show all log messages
 		.addSink<Aegix::Log::ConsoleSink>();
 
-	ALOG_FATAL << "This is a critical message";
-	ALOG_WARN << "This is a warning message";
-	ALOG_INFO << "This is an info message";
-	ALOG_DEBUG << "This is a debug message"; // Completely stripped from release builds
-	ALOG_TRACE << "This is a trace message"; // Completely stripped from release builds
+	ALOG::fatal("This is a critical message");
+	ALOG::warn("This is a warning message");
+	ALOG::info("This is an info message");
+	ALOG::debug("This is a debug message"); // Will be stripped from release builds
+	ALOG::trace("This is a trace message"); // Will be stripped from release builds
 
 	return 0;
 }

@@ -21,11 +21,11 @@ auto main() -> int
 	{
 		for (int i = 0; i < numMessages; ++i)
 		{
-			ALOG_INFO << "Thread " << id << " message " << i;
+			ALOG::info("Thread {} message {}", id, i);
 		}
 	};
 
-	ALOG_INFO << "Starting " << numThreads << " threads, each logging " << numMessages << " messages";
+	ALOG::info("Starting {} threads, each logging {} messages", numThreads, numMessages);
 
 	std::vector<std::thread> threads;
 	threads.reserve(numThreads);
@@ -34,14 +34,14 @@ auto main() -> int
 		threads.emplace_back(threadFun, i);
 	}
 
-	ALOG_INFO << "All threads started";
+	ALOG::info("All threads started");
 
 	for (auto& thread : threads)
 	{
 		thread.join();
 	}
 
-	ALOG_INFO << "All threads finished";
+	ALOG::info("All threads finished");
 
 	return 0;
 }

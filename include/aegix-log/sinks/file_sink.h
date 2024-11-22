@@ -22,8 +22,9 @@ namespace Aegix::Log
 				if (error)
 				{
 					assert(false && "Failed to create directory for log-file");
-					ALOG_FATAL << "Failed to create directory for log-file: " << filepath.parent_path()
-							  << " Error: " << error.message();
+					ALOG::fatal("Failed to create directory for log-file: {} Error: {}",
+						filepath.parent_path().string(),
+						error.message());
 				}
 			}
 
@@ -31,7 +32,7 @@ namespace Aegix::Log
 			if (!m_file.is_open())
 			{
 				assert(false && "Failed to open log-file");
-				ALOG_FATAL << "Failed to open log-file: " << filepath;
+				ALOG::fatal("Failed to open log-file: {}", filepath.string());
 			}
 		}
 
