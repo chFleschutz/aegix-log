@@ -44,9 +44,16 @@ auto main() -> int
 	ALOG_INFO << "This is an info message";	 // Excluded
 	ALOG_DEBUG << "This is a debug message"; // Excluded
 
+	// Format string logging
+	ALOG::instance().setSeverityThreshold(ALOG::Trace);
+
 	Aegix::Log::log(Aegix::Log::Fatal, "Hello World");
 	Aegix::Log::warn("Warn this World");
-	Aegix::Log::info("Inform the World"); // Excluded
+	Aegix::Log::info("Inform the World about {}", 42); 
+
+	ALOG::warn("Warn this World again");
+	ALOG::fatal("Hello World again");
+	ALOG::log(ALOG::Info, "Inform the World again");
 
 	return 0;
 }

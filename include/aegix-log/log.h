@@ -121,3 +121,5 @@ namespace Aegix::Log
 		log(Severity::Trace, fmt, std::forward<Args>(args)...);
 	}
 } // namespace Aegix::Log
+
+namespace ALOG = Aegix::Log;
