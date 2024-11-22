@@ -12,18 +12,6 @@
 #   Removed because it is too strict
 #   This check causes too many false positives, especially when using mathematical formulas
 # 
-# -cppcoreguidelines-macro-usage
-#   TODO: Reevaluate this check
-#   Removed because this project is based on macros and needs to be fixed before re-enabling
-#
-# -cppcoreguidelines-pro-bounds-array-to-pointer-decay
-#   TODO: Reevaluate this check
-#   Removed because this check clashes with certain template functions and needs to be fixed before re-enabling
-#
-# -misc-const-correctness
-#   Removed because it causes too much noise
-#   This check flags any variable that can be const, which is not always desirable 
-#
 # -misc-include-cleaner
 #   TODO: Reevaluate this check
 #   This was removed to reduce include dependencies, but it should be re-evaluated
@@ -51,9 +39,6 @@ Checks:
     readability-else-after-return,
     -cppcoreguidelines-avoid-const-or-ref-data-members,
     -cppcoreguidelines-avoid-magic-numbers,
-    -cppcoreguidelines-macro-usage,
-    -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
-    -misc-const-correctness,
     -misc-include-cleaner,
     -performance-enum-size,
 
@@ -72,3 +57,5 @@ CheckOptions:
     value: m_
   - key: readability-identifier-naming.PrivateStaticMemberPrefix
     value: s_
+  - key: misc-const-correctness.AnalyzeValues
+    value: false

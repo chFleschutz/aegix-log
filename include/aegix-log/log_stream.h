@@ -37,6 +37,13 @@ namespace Aegix::Log
 			return *this;
 		}
 
+		template <typename T>
+		auto operator<<(const T* pointer) -> LogStream&
+		{
+			m_stream << pointer;
+			return *this;
+		}
+
 	private:
 		std::ostringstream m_stream;
 		LogEntry m_entry;
