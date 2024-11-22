@@ -1,6 +1,7 @@
 #pragma once
 
 #include "aegix-log/log_entry.h"
+#include "aegix-log/log_stream.h"
 #include "aegix-log/logger.h"
 
 #define ALOG_DISABLE_LINE \

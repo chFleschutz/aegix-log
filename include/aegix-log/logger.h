@@ -3,6 +3,7 @@
 #include "aegix-log/formatter/default_formatter.h"
 #include "aegix-log/helper/singleton.h"
 #include "aegix-log/log_entry.h"
+#include "aegix-log/log_stream.h"
 #include "aegix-log/log_thread.h"
 #include "aegix-log/sinks/log_sink.h"
 
@@ -18,7 +19,6 @@ namespace Aegix::Log
 	class Logger : public Singleton<Logger<ID>>
 	{
 	public:
-
 		void operator+=(const LogStream& stream) { log(std::move(stream.entry())); }
 
 		void log(LogEntry entry)

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "aegix-log/formatter/formatter.h"
-#include "aegix-log/util.h"
 
 namespace Aegix::Log
 {
