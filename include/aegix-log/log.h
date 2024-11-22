@@ -62,7 +62,6 @@
 #define ALOG_DEBUG	   ALOG_DEBUG_(Aegix::Log::DEFAULT_LOGGER)
 #define ALOG_TRACE	   ALOG_TRACE_(Aegix::Log::DEFAULT_LOGGER)
 
-
 namespace Aegix::Log
 {
 	constexpr int DEFAULT_LOGGER = 0;
@@ -83,5 +82,42 @@ namespace Aegix::Log
 	inline auto instance() -> Logger<LogID>&
 	{
 		return Logger<LogID>::instance();
+	}
+
+	template <typename... Args>
+	static void log(Severity severity, std::format_string<Args...> fmt, Args&&... args)
+	{
+		// TODO: Improve adding logEntries
+		instance() += LogEntry(severity) << std::format(fmt, std::forward<Args>(args)...);
+	}
+
+	template <typename... Args>
+	static void fatal(std::format_string<Args...> fmt, Args&&... args)
+	{
+		log(Severity::Fatal, fmt, std::forward<Args>(args)...);
+	}
+
+	template <typename... Args>
+	static void warn(std::format_string<Args...> fmt, Args&&... args)
+	{
+		log(Severity::Warn, fmt, std::forward<Args>(args)...);
+	}
+
+	template <typename... Args>
+	static void info(std::format_string<Args...> fmt, Args&&... args)
+	{
+		log(Severity::Info, fmt, std::forward<Args>(args)...);
+	}
+
+	template <typename... Args>
+	static void debug(std::format_string<Args...> fmt, Args&&... args)
+	{
+		log(Severity::Debug, fmt, std::forward<Args>(args)...);
+	}
+
+	template <typename... Args>
+	static void trace(std::format_string<Args...> fmt, Args&&... args)
+	{
+		log(Severity::Trace, fmt, std::forward<Args>(args)...);
 	}
 } // namespace Aegix::Log

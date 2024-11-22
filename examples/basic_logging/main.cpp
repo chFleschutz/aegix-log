@@ -44,5 +44,9 @@ auto main() -> int
 	ALOG_INFO << "This is an info message";	 // Excluded
 	ALOG_DEBUG << "This is a debug message"; // Excluded
 
+	Aegix::Log::log(Aegix::Log::Fatal, "Hello World");
+	Aegix::Log::warn("Warn this World");
+	Aegix::Log::info("Inform the World"); // Excluded
+
 	return 0;
 }
