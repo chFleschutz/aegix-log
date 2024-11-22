@@ -27,15 +27,15 @@ auto main() -> int
 		.addSink<Aegix::Log::FileSink>(logFile);
 
 	// Print to default logger
-	ALOG_INFO << "Secondary log file: " << logFile;
-	ALOG_FATAL << "This is a fatal message";
-	ALOG_INFO_(DefaultLog) << "This is an info message";
-	ALOG_(DefaultLog, Aegix::Log::Severity::Debug) << "This is a debug message";
+	ALOG::info() << "Secondary log file: " << logFile;
+	ALOG::fatal() << "This is a fatal message";
+	ALOG::info<DefaultLog>() << "This is an info message";
+	ALOG::debug<DefaultLog>() << "This is a debug message";
 
 	// Print to secondary logger
-	ALOG_FATAL_(SecondaryLog) << "Fatal message to secondary log";
-	ALOG_WARN_(SecondaryLog) << "Warn message to secondary log";
-	ALOG_INFO_(SecondaryLog) << "Info message to secondary log";
+	ALOG::fatal<SecondaryLog>() << "Fatal message to secondary log";
+	ALOG::warn<SecondaryLog>() << "Warn message to secondary log";
+	ALOG::info<SecondaryLog>() << "Info message to secondary log";
 
 	return 0;
 }

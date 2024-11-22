@@ -4,64 +4,6 @@
 #include "aegix-log/log_stream.h"
 #include "aegix-log/logger.h"
 
-#define ALOG_DISABLE_LINE \
-	if (true)             \
-	{                     \
-		;                 \
-	}                     \
-	else
-
-#ifdef AEGIX_LOG_DISABLE_LOGGING
-#define ALOG_IF_ALL ALOG_DISABLE_LINE
-#else
-#define ALOG_IF_ALL
-#endif
-
-#ifdef AEGIX_LOG_DISABLE_FATAL
-#define ALOG_IF_FATAL ALOG_DISABLE_LINE
-#else
-#define ALOG_IF_FATAL
-#endif
-
-#ifdef AEGIX_LOG_DISABLE_WARN
-#define ALOG_IF_WARN ALOG_DISABLE_LINE
-#else
-#define ALOG_IF_WARN
-#endif
-
-#ifdef AEGIX_LOG_DISABLE_INFO
-#define ALOG_IF_INFO ALOG_DISABLE_LINE
-#else
-#define ALOG_IF_INFO
-#endif
-
-#ifdef AEGIX_LOG_DISABLE_DEBUG
-#define ALOG_IF_DEBUG ALOG_DISABLE_LINE
-#else
-#define ALOG_IF_DEBUG
-#endif
-
-#ifdef AEGIX_LOG_DISABLE_TRACE
-#define ALOG_IF_TRACE ALOG_DISABLE_LINE
-#else
-#define ALOG_IF_TRACE
-#endif
-
-// Logging macros
-#define ALOG_(id, severity) ALOG_IF_ALL Aegix::Log::log<id>(severity)
-#define ALOG_FATAL_(id)		ALOG_IF_FATAL ALOG_(id, Aegix::Log::Severity::Fatal)
-#define ALOG_WARN_(id)		ALOG_IF_WARN ALOG_(id, Aegix::Log::Severity::Warn)
-#define ALOG_INFO_(id)		ALOG_IF_INFO ALOG_(id, Aegix::Log::Severity::Info)
-#define ALOG_DEBUG_(id)		ALOG_IF_DEBUG ALOG_(id, Aegix::Log::Severity::Debug)
-#define ALOG_TRACE_(id)		ALOG_IF_TRACE ALOG_(id, Aegix::Log::Severity::Trace)
-
-#define ALOG(severity) ALOG_(Aegix::Log::DEFAULT_LOGGER, severity)
-#define ALOG_FATAL	   ALOG_FATAL_(Aegix::Log::DEFAULT_LOGGER)
-#define ALOG_WARN	   ALOG_WARN_(Aegix::Log::DEFAULT_LOGGER)
-#define ALOG_INFO	   ALOG_INFO_(Aegix::Log::DEFAULT_LOGGER)
-#define ALOG_DEBUG	   ALOG_DEBUG_(Aegix::Log::DEFAULT_LOGGER)
-#define ALOG_TRACE	   ALOG_TRACE_(Aegix::Log::DEFAULT_LOGGER)
-
 namespace ALOG = Aegix::Log;
 
 namespace Aegix::Log
