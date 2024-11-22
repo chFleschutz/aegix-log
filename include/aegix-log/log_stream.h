@@ -1,6 +1,7 @@
 #pragma once
 
 #include "aegix-log/log_entry.h"
+#include "aegix-log/logger.h"
 
 #include <chrono>
 #include <sstream>
@@ -8,17 +9,23 @@
 
 namespace Aegix::Log
 {
+	template <int LoggerID>
 	class LogStream
 	{
 	public:
-		LogStream(Severity severity)
+		explicit LogStream(Severity severity)
 			: m_entry{ severity, std::chrono::system_clock::now(), std::this_thread::get_id(), std::string() }
 		{
 		}
 
+		~LogStream()
+		{
+			m_entry.message = m_stream.str();
+			Logger<LoggerID>::instance().log(std::move(m_entry));
+		}
+
 		LogStream(const LogStream&) = delete;
 		LogStream(LogStream&&) = default;
-		~LogStream() = default;
 
 		auto operator=(const LogStream&) -> LogStream& = delete;
 		auto operator=(LogStream&&) -> LogStream& = default;
@@ -28,14 +35,6 @@ namespace Aegix::Log
 		{
 			m_stream << value;
 			return *this;
-		}
-
-		// TODO: Remove the copy of the entry
-		[[nodiscard]] auto entry() const -> LogEntry
-		{
-			LogEntry entry = m_entry;
-			entry.message = m_stream.str();
-			return entry;
 		}
 
 	private:

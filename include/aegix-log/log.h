@@ -47,9 +47,8 @@
 #define ALOG_IF_TRACE
 #endif
 
-
 // Logging macros
-#define ALOG_(id, severity) ALOG_IF_ALL Aegix::Log::instance<id>() += Aegix::Log::LogStream(severity)
+#define ALOG_(id, severity) ALOG_IF_ALL Aegix::Log::LogStream<id>{severity}
 #define ALOG_FATAL_(id)		ALOG_IF_FATAL ALOG_(id, Aegix::Log::Severity::Fatal)
 #define ALOG_WARN_(id)		ALOG_IF_WARN ALOG_(id, Aegix::Log::Severity::Warn)
 #define ALOG_INFO_(id)		ALOG_IF_INFO ALOG_(id, Aegix::Log::Severity::Info)
@@ -86,37 +85,37 @@ namespace Aegix::Log
 	}
 
 	template <typename... Args>
-	static void log(Severity severity, std::format_string<Args...> fmt, Args&&... args)
+	inline void log(Severity severity, std::format_string<Args...> fmt, Args&&... args)
 	{
 		instance().log(severity, fmt, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
-	static void fatal(std::format_string<Args...> fmt, Args&&... args)
+	inline void fatal(std::format_string<Args...> fmt, Args&&... args)
 	{
 		instance().fatal(fmt, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
-	static void warn(std::format_string<Args...> fmt, Args&&... args)
+	inline void warn(std::format_string<Args...> fmt, Args&&... args)
 	{
 		instance().warn(fmt, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
-	static void info(std::format_string<Args...> fmt, Args&&... args)
+	inline void info(std::format_string<Args...> fmt, Args&&... args)
 	{
 		instance().info(fmt, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
-	static void debug(std::format_string<Args...> fmt, Args&&... args)
+	inline void debug(std::format_string<Args...> fmt, Args&&... args)
 	{
 		instance().debug(fmt, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
-	static void trace(std::format_string<Args...> fmt, Args&&... args)
+	inline void trace(std::format_string<Args...> fmt, Args&&... args)
 	{
 		instance().trace(fmt, std::forward<Args>(args)...);
 	}
