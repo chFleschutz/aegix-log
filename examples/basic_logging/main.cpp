@@ -57,5 +57,14 @@ auto main() -> int
 
 	ALOG::instance<ALOG::DEFAULT_LOGGER>().fatal("Fatal World again");
 
+	// Stream style logging
+	ALOG::log(ALOG::Info) << "Hello World";
+	ALOG::warn() << "Warn this World";
+	ALOG::fatal() << "Fatal World " << 42 << " times";
+
+	ALOG::info<0>() << "Hello World";
+
+	ALOG::fatal("This is the last fatal message for today");
+
 	return 0;
 }

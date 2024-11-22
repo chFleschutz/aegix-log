@@ -48,7 +48,7 @@
 #endif
 
 // Logging macros
-#define ALOG_(id, severity) ALOG_IF_ALL Aegix::Log::LogStream<id>{severity}
+#define ALOG_(id, severity) ALOG_IF_ALL Aegix::Log::log<id>(severity)
 #define ALOG_FATAL_(id)		ALOG_IF_FATAL ALOG_(id, Aegix::Log::Severity::Fatal)
 #define ALOG_WARN_(id)		ALOG_IF_WARN ALOG_(id, Aegix::Log::Severity::Warn)
 #define ALOG_INFO_(id)		ALOG_IF_INFO ALOG_(id, Aegix::Log::Severity::Info)
@@ -61,6 +61,8 @@
 #define ALOG_INFO	   ALOG_INFO_(Aegix::Log::DEFAULT_LOGGER)
 #define ALOG_DEBUG	   ALOG_DEBUG_(Aegix::Log::DEFAULT_LOGGER)
 #define ALOG_TRACE	   ALOG_TRACE_(Aegix::Log::DEFAULT_LOGGER)
+
+namespace ALOG = Aegix::Log;
 
 namespace Aegix::Log
 {
@@ -119,6 +121,40 @@ namespace Aegix::Log
 	{
 		instance().trace(fmt, std::forward<Args>(args)...);
 	}
-} // namespace Aegix::Log
 
-namespace ALOG = Aegix::Log;
+	template <int LogID = DEFAULT_LOGGER>
+	inline constexpr auto log(Severity severity) -> LogStream<LogID>
+	{
+		return LogStream<LogID>(severity);
+	}
+
+	template <int LogID = DEFAULT_LOGGER>
+	inline constexpr auto fatal() -> LogStream<LogID>
+	{
+		return log<LogID>(Severity::Fatal);
+	}
+
+	template <int LogID = DEFAULT_LOGGER>
+	inline constexpr auto warn() -> LogStream<LogID>
+	{
+		return log<LogID>(Severity::Warn);
+	}
+
+	template <int LogID = DEFAULT_LOGGER>
+	inline constexpr auto info() -> LogStream<LogID>
+	{
+		return log<LogID>(Severity::Info);
+	}
+
+	template <int LogID = DEFAULT_LOGGER>
+	inline constexpr auto debug() -> LogStream<LogID>
+	{
+		return log<LogID>(Severity::Debug);
+	}
+
+	template <int LogID = DEFAULT_LOGGER>
+	inline constexpr auto trace() -> LogStream<LogID>
+	{
+		return log<LogID>(Severity::Trace);
+	}
+} // namespace Aegix::Log
