@@ -41,4 +41,14 @@ namespace Aegix::Log
 		std::ostringstream m_stream;
 		LogEntry m_entry;
 	};
+
+	class NoOpLogStream
+	{
+	public:
+		template <typename T>
+		auto constexpr operator<<(const T&) -> NoOpLogStream&
+		{
+			return *this;
+		}
+	};
 } // namespace Aegix::Log

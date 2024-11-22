@@ -11,7 +11,7 @@
 	}                     \
 	else
 
-#ifdef AEGIX_LOG_DISABLE_ALL
+#ifdef AEGIX_LOG_DISABLE_LOGGING
 #define ALOG_IF_ALL ALOG_DISABLE_LINE
 #else
 #define ALOG_IF_ALL
@@ -86,6 +86,7 @@ namespace Aegix::Log
 		return Logger<LogID>::instance();
 	}
 
+	/// @brief This function bypasses the macro disabling for specific severity levels
 	template <typename... Args>
 	inline void log(Severity severity, std::format_string<Args...> fmt, Args&&... args)
 	{
@@ -122,39 +123,64 @@ namespace Aegix::Log
 		instance().trace(fmt, std::forward<Args>(args)...);
 	}
 
+	/// @brief This function bypasses the macro disabling for specific severity levels
 	template <int LogID = DEFAULT_LOGGER>
-	inline constexpr auto log(Severity severity) -> LogStream<LogID>
+	inline constexpr auto log(Severity severity)
 	{
+#ifdef AEGIX_LOG_DISABLE_LOGGING
+		return NoOpLogStream();
+#else
 		return LogStream<LogID>(severity);
+#endif
 	}
 
 	template <int LogID = DEFAULT_LOGGER>
-	inline constexpr auto fatal() -> LogStream<LogID>
+	inline constexpr auto fatal()
 	{
+#ifdef AEGIX_LOG_DISABLE_FATAL
+		return NoOpLogStream();
+#else
 		return log<LogID>(Severity::Fatal);
+#endif 
 	}
 
 	template <int LogID = DEFAULT_LOGGER>
-	inline constexpr auto warn() -> LogStream<LogID>
+	inline constexpr auto warn()
 	{
+#ifdef AEGIX_LOG_DISABLE_WARN
+		return NoOpLogStream();
+#else
 		return log<LogID>(Severity::Warn);
+#endif
 	}
 
 	template <int LogID = DEFAULT_LOGGER>
-	inline constexpr auto info() -> LogStream<LogID>
+	inline constexpr auto info()
 	{
+#ifdef AEGIX_LOG_DISABLE_INFO
+		return NoOpLogStream();
+#else
 		return log<LogID>(Severity::Info);
+#endif
 	}
 
 	template <int LogID = DEFAULT_LOGGER>
-	inline constexpr auto debug() -> LogStream<LogID>
+	inline constexpr auto debug()
 	{
+#ifdef AEGIX_LOG_DISABLE_DEBUG
+		return NoOpLogStream();
+#else
 		return log<LogID>(Severity::Debug);
+#endif
 	}
 
 	template <int LogID = DEFAULT_LOGGER>
-	inline constexpr auto trace() -> LogStream<LogID>
+	inline constexpr auto trace()
 	{
+#ifdef AEGIX_LOG_DISABLE_TRACE
+		return NoOpLogStream();
+#else
 		return log<LogID>(Severity::Trace);
+#endif
 	}
 } // namespace Aegix::Log

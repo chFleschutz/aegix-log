@@ -20,6 +20,7 @@ namespace Aegix::Log
 	public:
 		void log(LogEntry entry)
 		{
+#ifndef AEGIX_LOG_DISABLE_LOGGING
 			if (entry.severity < m_severityThreshold)
 				return;
 
@@ -31,45 +32,58 @@ namespace Aegix::Log
 			{
 				write(entry);
 			}
+#endif
 		}
 
 		template <typename... Args>
 		void log(Severity severity, std::format_string<Args...> fmt, Args&&... args)
 		{
+#ifndef AEGIX_LOG_DISABLE_LOGGING
 			log({ .severity = severity,
 				.time = std::chrono::system_clock::now(),
 				.threadId = std::this_thread::get_id(),
 				.message = std::format(fmt, std::forward<Args>(args)...) });
+#endif
 		}
 
 		template <typename... Args>
 		void fatal(std::format_string<Args...> fmt, Args&&... args)
 		{
+#ifndef AEGIX_LOG_DISABLE_FATAL
 			log(Severity::Fatal, fmt, std::forward<Args>(args)...);
+#endif
 		}
 
 		template <typename... Args>
 		void warn(std::format_string<Args...> fmt, Args&&... args)
 		{
+#ifndef AEGIX_LOG_DISABLE_WARN
 			log(Severity::Warn, fmt, std::forward<Args>(args)...);
+#endif
 		}
 
 		template <typename... Args>
 		void info(std::format_string<Args...> fmt, Args&&... args)
 		{
+#ifndef AEGIX_LOG_DISABLE_INFO
 			log(Severity::Info, fmt, std::forward<Args>(args)...);
+#endif
 		}
 
 		template <typename... Args>
 		void debug(std::format_string<Args...> fmt, Args&&... args)
 		{
+#ifndef AEGIX_LOG_DISABLE_DEBUG
 			log(Severity::Debug, fmt, std::forward<Args>(args)...);
+#endif
 		}
 
 		template <typename... Args>
 		void trace(std::format_string<Args...> fmt, Args&&... args)
 		{
+#ifndef AEGIX_LOG_DISABLE_TRACE
 			log(Severity::Trace, fmt, std::forward<Args>(args)...);
+#endif
 		}
 
 		template <typename SinkType, typename FormatterType = DefaultFormatter, typename... Args>
