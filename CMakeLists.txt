@@ -14,10 +14,6 @@ if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include(static_analysis)
-if (AEGIX_LOG_ENABLE_STATIC_ANALYSIS)
-	SETUP_STATIC_ANALYSIS()
-endif()
 
 # --- Library ---
 add_library(${PROJECT_NAME} INTERFACE)
