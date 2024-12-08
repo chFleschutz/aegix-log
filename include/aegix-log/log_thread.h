@@ -1,11 +1,11 @@
 #pragma once
 
-#include "aegix-log/helper/token.h"
 #include "aegix-log/log_entry.h"
 
-#include <atomic>
 #include <condition_variable>
 #include <functional>
+#include <future>
+#include <mutex>
 #include <queue>
 #include <thread>
 
@@ -18,7 +18,7 @@ namespace Aegix::Log
 		{
 			LogEntry entry;
 			std::function<void(const LogEntry&)> sinkFunc;
-			Token& token;
+			std::promise<void> promise;
 		};
 
 		LogThread() = default;
@@ -33,17 +33,18 @@ namespace Aegix::Log
 		auto operator=(const LogThread&) -> LogThread& = delete;
 		auto operator=(LogThread&&) -> LogThread& = delete;
 
-		void operator+=(Task&& task)
+		auto addTask(LogEntry entry, std::function<void(const LogEntry&)> sinkFunc) -> std::future<void>
 		{
-			if (m_workerThread.get_stop_source().stop_requested())
-				return;
-
-			task.token.increment();
+			Task task{};
+			task.entry = std::move(entry);
+			task.sinkFunc = std::move(sinkFunc);
+			auto future = task.promise.get_future();
 			{
 				std::lock_guard lock(m_queueMutex);
 				m_taskQueue.push(std::move(task));
 			}
 			m_taskAvailable.notify_one();
+			return future;
 		}
 
 	private:
@@ -62,7 +63,6 @@ namespace Aegix::Log
 					lock.unlock();
 
 					task.sinkFunc(task.entry);
-					task.token.decrement();
 				}
 			}
 		}

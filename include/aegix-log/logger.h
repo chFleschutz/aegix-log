@@ -7,6 +7,7 @@
 #include "aegix-log/sinks/log_sink.h"
 
 #include <functional>
+#include <future>
 #include <memory>
 #include <mutex>
 #include <type_traits>
@@ -18,6 +19,12 @@ namespace Aegix::Log
 	class Logger : public Singleton<Logger<ID>>
 	{
 	public:
+		~Logger()
+		{
+			if (m_lastTask.valid())
+				m_lastTask.wait();
+		}
+
 		void log(LogEntry entry)
 		{
 #ifndef AEGIX_LOG_DISABLE_LOGGING
@@ -26,7 +33,7 @@ namespace Aegix::Log
 
 			if (m_logThread)
 			{
-				*m_logThread += { std::move(entry), std::bind_front(&Logger::write, this), m_taskToken };
+				m_lastTask = m_logThread->addTask(std::move(entry), std::bind_front(&Logger::write, this));
 			}
 			else
 			{
@@ -39,10 +46,10 @@ namespace Aegix::Log
 		void log(Severity severity, std::format_string<Args...> fmt, Args&&... args)
 		{
 #ifndef AEGIX_LOG_DISABLE_LOGGING
-			log({ .severity = severity,
-				.time = std::chrono::system_clock::now(),
-				.threadId = std::this_thread::get_id(),
-				.message = std::format(fmt, std::forward<Args>(args)...) });
+			log({ severity,
+				std::chrono::system_clock::now(),
+				std::this_thread::get_id(),
+				std::format(fmt, std::forward<Args>(args)...) });
 #endif
 		}
 
@@ -120,9 +127,7 @@ namespace Aegix::Log
 
 		std::vector<std::unique_ptr<LogSink>> m_sinks;
 		std::mutex m_sinkMutex;
-
-		// Keep this last to ensure it's destroyed first
-		Token m_taskToken;
+		std::future<void> m_lastTask;
 
 		template <int LoggerID>
 		friend auto initLogger(std::shared_ptr<LogThread>, Severity) -> Logger<LoggerID>&;
