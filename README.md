@@ -6,16 +6,17 @@ Simple and fast header-only C++20 logging library with no dependencies.
 
 ## Features
 
-- Fast
 - Header-only
-- Stream-based logging
+- Stream-style logging
+- Format-string-style logging
 - Thread-safe
 - Asynchronous logging for improved performance
 - Runtime log filtering
 - Easily exclude specific log levels from builds
 - Log to multiple destinations
 - Support for multiple loggers
-- Custom sink support for logging to custom destinations 
+- Custom sink support for logging to custom destinations
+- Custom formatter support
 
 ## Getting Started
 
@@ -23,19 +24,22 @@ The library requires a C++20 compiler.
 
 Since it's header-only, simply copy the [include](include/) folder to your project.
 
-Alternatively you can add the library using cmake:
+Alternatively you can add the library using cmake to automatically set the include paths:
 
-1. Clone the repo
+1. Clone the repo to your desired location
+
 ```bash
 git clone https://github.com/chFleschutz/aegix-log.git
 ```
-2. Add the subdirectory of the library in your projects `CMakeLists.txt` file and link it to automatically set the include paths
+
+2. Add the subdirectory of the library in your projects `CMakeLists.txt` file and link it to your target
+
 ```cmake
 add_subdirectory(aegix-log)
 target_link_libraries(MyProject PRIVATE Aegix::Log)
 ```
 
-## Examples
+## Usage Examples
 
 See the [examples](examples/) folder for full example projects.
 
@@ -48,18 +52,26 @@ See the [examples](examples/) folder for full example projects.
 int main()
 {
 	// Initialize default logger
-	Aegix::Log::init(Aegix::Severity::Trace) // Shows all log messages
-		.addSink<Aegix::ConsoleSink>();
+	Aegix::Log::init(Aegix::Log::Trace) // Show all log messages
+		.addSink<Aegix::Log::ConsoleSink>();
 
-	// Basic logging
-	ALOG_FATAL << "This is a fatal message";
-	ALOG_WARN << "This is a warning message";
-	ALOG_INFO << "This is an info message";
-	ALOG_DEBUG << "This is a debug message";
-	ALOG_TRACE << "This is a trace message";
+	// Stream style logging
+	ALOG::fatal() << "This is a fatal message";
+	ALOG::warn() << "This is a warn message";
+	ALOG::info() << "This is an info message";
+	ALOG::debug() << "This is a debug message";
+	ALOG::trace() << "This is a trace message";
 
-	ALOG(Aegix::Severity::Fatal) << "This is an explicit critical message";
-	ALOG(Aegix::Severity::Info) << "This is an explicit info message";
+	// Format string style logging
+	ALOG::fatal("This is a fatal message");
+	ALOG::warn("This is a warn message");
+	ALOG::info("This is a info message");
+	ALOG::debug("This is a debug message");
+	ALOG::trace("This is a trace message");
+
+	// Formatted logging
+	ALOG::info() << "The answer is " << 42;
+	ALOG::info("The answer is indeed {}", 42);
 }
 ```
 
@@ -71,11 +83,12 @@ int main()
 
 int main()
 {
-	Aegix::Log::init<SecondaryLog>(Aegix::Severity::Info) // 
+	Aegix::Log::init(Aegix::Severity::Trace) // Show all logs 
 		.addSink<Aegix::ConsoleSink>()
 		.addSink<Aegix::FileSink>("log.txt");
 
-	ALOG_INFO << "Log file: " << "log.txt";
+	// Printed in both the console and the log file
+	ALOG::info("Hello World");
 }
 ```
 
@@ -88,34 +101,35 @@ int main()
 // Optional: create enum for IDs
 enum LogID
 {
-	Log1 = Aegix::Log::DEFAULT_LOGGER,
-	Log2
+	Default = Aegix::Log::DEFAULT_LOGGER,
+	Secondary
 };
 
-int main()
+auto main() -> int
 {
 	// Default logger
-	Aegix::Log::init(Aegix::Severity::Trace) // Show all log messages
-		.addSink<Aegix::ConsoleSink>();
+	Aegix::Log::init(Aegix::Log::Trace) // Show all logs
+		.addSink<Aegix::Log::ConsoleSink>();
 
 	// Secondary logger
-	Aegix::Log::init<Log2>(Aegix::Severity::Fatal) //  Show only fatal messages
-		.addSink<Aegix::FileSink>("log.txt");
+	Aegix::Log::init<Secondary>(Aegix::Log::Severity::Fatal) // Show only fatal logs
+		.addSink<Aegix::Log::ConsoleSink>()
+		.addSink<Aegix::Log::FileSink>("log.txt");
 
 	// Print to default logger
-	ALOG_INFO << "Secondary log file: " << "log.txt";
-	ALOG_FATAL << "This is a fatal message";
-	ALOG_INFO_(Log1) << "This is an info message";  // Explicitly print to default logger
+	ALOG::fatal() << "This is a fatal message";
+	ALOG::info<Default>() << "This is an info message";
+	ALOG::debug<Default>() << "This is a debug message";
 
 	// Print to secondary logger
-	ALOG_FATAL_(Log2) << "Fatal message to secondary log";
-	ALOG_INFO_(Log2) << "Info message to secondary log"; // Excluded
+	ALOG::fatal<Secondary>() << "Fatal message to secondary log";
+	ALOG::warn<Secondary>() << "Warn message to secondary log"; // Excluded
 }
 ```
 
 **Exclude logs from release build**
 ```cpp
-// Exclude trace and debug messages in release mode
+// Disable trace and debug messages in release mode
 #ifdef NDEBUG
 #define AEGIX_LOG_DISABLE_DEBUG
 #define AEGIX_LOG_DISABLE_TRACE
@@ -124,17 +138,36 @@ int main()
 #include <aegix-log/log.h>
 #include <aegix-log/sinks/console_sink.h>
 
-int main()
+auto main() -> int
 {
-	Aegix::Log::init(Aegix::Severity::Trace) // Show all log messages
-		.addSink<Aegix::ConsoleSink>();
+	Aegix::Log::init(Aegix::Log::Trace) 
+		.addSink<Aegix::Log::ConsoleSink>();
 
-	ALOG_FATAL << "This is a critical message";
-	ALOG_WARN << "This is a warning message";
-	ALOG_INFO << "This is an info message";
-	ALOG_DEBUG << "This is a debug message"; // Completely stripped from release builds
-	ALOG_TRACE << "This is a trace message"; // Completely stripped from release builds
+	ALOG::fatal("This is a critical message");
+	ALOG::warn("This is a warning message");
+	ALOG::info("This is an info message");
+	ALOG::debug("This is a debug message"); // Will be stripped from release builds
+	ALOG::trace("This is a trace message"); // Will be stripped from release builds
+}
+```
 
-	return 0;
+**Custom log threads**
+```cpp
+#include <aegix-log/log.h>
+#include <aegix-log/sinks/console_sink.h>
+
+auto main() -> int
+{
+	// Logger 0 uses the current thread for logging
+	Aegix::Log::init<0, Aegix::Log::NO_THREAD>(Aegix::Log::Trace)
+		.addSink<Aegix::Log::ConsoleSink>();
+
+	// Logger 1 uses a separate thread with ID 1
+	Aegix::Log::init<1, 1>(Aegix::Log::Trace) 
+		.addSink<Aegix::Log::ConsoleSink>();
+
+	// Logger 2 uses a separate thread with ID 1 (same thread as Logger 1)
+	Aegix::Log::init<2, 1>(Aegix::Log::Trace)
+		.addSink<Aegix::Log::ConsoleSink>();
 }
 ```
