@@ -13,8 +13,6 @@ if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(AEGIX_LOG_BUILD_EXAMPLES ON CACHE BOOL "Force enable examples in root project" FORCE)
 endif()
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
 # --- Library ---
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(Aegix::Log ALIAS ${PROJECT_NAME})
