@@ -25,6 +25,8 @@ namespace Aegix::Log
 				m_lastTask.wait();
 		}
 
+		/// @brief Writes 'entry' to all sinks if the severity is greater than or equal to the threshold
+		/// @note If the log thread is available, the task will be executed on that thread
 		void log(LogEntry entry)
 		{
 #ifndef AEGIX_LOG_DISABLE_LOGGING
@@ -33,12 +35,17 @@ namespace Aegix::Log
 
 			if (m_logThread)
 			{
-				m_lastTask = m_logThread->addTask(std::move(entry), std::bind_front(&Logger::write, this));
+				// Adding a task can fail if the queue is full
+				auto result = m_logThread->addTask(entry, std::bind_front(&Logger::write, this));
+				if (result.has_value())
+				{
+					m_lastTask = std::move(*result);
+					return;
+				}
 			}
-			else
-			{
-				write(entry);
-			}
+			
+			// If the log thread is not available, log directly on this thread
+			write(entry);
 #endif
 		}
 

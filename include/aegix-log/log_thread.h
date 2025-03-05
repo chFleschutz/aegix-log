@@ -11,9 +11,12 @@
 
 namespace Aegix::Log
 {
+	/// @brief A thread that processes log tasks
 	class LogThread
 	{
 	public:
+		static constexpr size_t MAX_QUEUE_SIZE = 1000;
+
 		struct Task
 		{
 			LogEntry entry;
@@ -33,14 +36,30 @@ namespace Aegix::Log
 		auto operator=(const LogThread&) -> LogThread& = delete;
 		auto operator=(LogThread&&) -> LogThread& = delete;
 
-		auto addTask(LogEntry entry, std::function<void(const LogEntry&)> sinkFunc) -> std::future<void>
+		[[nodiscard]] auto queueSize() const -> size_t
 		{
+			std::lock_guard lock(m_queueMutex);
+			return m_taskQueue.size();
+		}
+
+		/// @brief Adds a log task to the thread queue which will be processed by the worker thread
+		/// @return If successful, returns a future that will be set when the task is completed otherwise 'std::nullopt'
+		/// @note If successful, 'entry' will be moved into the queue and is no longer valid
+		auto addTask(LogEntry& entry, std::function<void(const LogEntry&)> sinkFunc) -> std::optional<std::future<void>>
+		{
+			assert(sinkFunc && "Sink function must be valid");
+
 			Task task{};
-			task.entry = std::move(entry);
-			task.sinkFunc = std::move(sinkFunc);
 			auto future = task.promise.get_future();
 			{
 				std::lock_guard lock(m_queueMutex);
+				if (m_taskQueue.size() >= MAX_QUEUE_SIZE)
+					return std::nullopt;
+
+				// Only move if queue can accept the task
+				task.entry = std::move(entry);
+				task.sinkFunc = std::move(sinkFunc);
+
 				m_taskQueue.push(std::move(task));
 			}
 			m_taskAvailable.notify_one();
@@ -67,8 +86,8 @@ namespace Aegix::Log
 			}
 		}
 
+		mutable std::mutex m_queueMutex;
 		std::queue<Task> m_taskQueue;
-		std::mutex m_queueMutex;
 		std::condition_variable m_taskAvailable;
 		std::jthread m_workerThread{ std::bind_front(&LogThread::processTasks, this) };
 	};
