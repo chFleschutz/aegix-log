@@ -52,6 +52,8 @@ namespace Aegix::Log
 	class NoOpLogStream
 	{
 	public:
+		constexpr NoOpLogStream() = default;
+
 		template <typename T>
 		auto constexpr operator<<(const T&) -> NoOpLogStream&
 		{
