@@ -1,5 +1,6 @@
 #pragma once
 
+#include "aegix-log/config.h"
 #include "aegix-log/formatter/default_formatter.h"
 #include "aegix-log/helper/singleton.h"
 #include "aegix-log/log_entry.h"
@@ -29,7 +30,9 @@ namespace Aegix::Log
 		/// @note If the log thread is available, the task will be executed on that thread
 		void log(LogEntry entry)
 		{
-#ifndef AEGIX_LOG_DISABLE_LOGGING
+			if constexpr (!LOGGING_ENABLED)
+				return;
+
 			if (entry.severity < m_severityThreshold)
 				return;
 
@@ -41,58 +44,63 @@ namespace Aegix::Log
 			{
 				logImmediate(entry);
 			}
-#endif
 		}
 
 		template <typename... Args>
 		void log(Severity severity, std::format_string<Args...> fmt, Args&&... args)
 		{
-#ifndef AEGIX_LOG_DISABLE_LOGGING
+			if constexpr (!LOGGING_ENABLED)
+				return;
+
 			log({ severity,
 				std::chrono::system_clock::now(),
 				std::this_thread::get_id(),
 				std::format(fmt, std::forward<Args>(args)...) });
-#endif
 		}
 
 		template <typename... Args>
 		void fatal(std::format_string<Args...> fmt, Args&&... args)
 		{
-#ifndef AEGIX_LOG_DISABLE_FATAL
+			if constexpr (!FATAL_ENABLED)
+				return;
+
 			log(Severity::Fatal, fmt, std::forward<Args>(args)...);
-#endif
 		}
 
 		template <typename... Args>
 		void warn(std::format_string<Args...> fmt, Args&&... args)
 		{
-#ifndef AEGIX_LOG_DISABLE_WARN
+			if constexpr (!WARN_ENABLED)
+				return;
+
 			log(Severity::Warn, fmt, std::forward<Args>(args)...);
-#endif
 		}
 
 		template <typename... Args>
 		void info(std::format_string<Args...> fmt, Args&&... args)
 		{
-#ifndef AEGIX_LOG_DISABLE_INFO
+			if constexpr (!INFO_ENABLED)
+				return;
+
 			log(Severity::Info, fmt, std::forward<Args>(args)...);
-#endif
 		}
 
 		template <typename... Args>
 		void debug(std::format_string<Args...> fmt, Args&&... args)
 		{
-#ifndef AEGIX_LOG_DISABLE_DEBUG
+			if constexpr (!DEBUG_ENABLED)
+				return;
+
 			log(Severity::Debug, fmt, std::forward<Args>(args)...);
-#endif
 		}
 
 		template <typename... Args>
 		void trace(std::format_string<Args...> fmt, Args&&... args)
 		{
-#ifndef AEGIX_LOG_DISABLE_TRACE
+			if constexpr (!TRACE_ENABLED)
+				return;
+
 			log(Severity::Trace, fmt, std::forward<Args>(args)...);
-#endif
 		}
 
 		template <typename SinkType, typename FormatterType = DefaultFormatter, typename... Args>

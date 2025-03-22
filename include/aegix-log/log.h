@@ -1,5 +1,6 @@
 #pragma once
 
+#include "aegix-log/config.h"
 #include "aegix-log/log_entry.h"
 #include "aegix-log/log_stream.h"
 #include "aegix-log/logger.h"
@@ -69,60 +70,54 @@ namespace Aegix::Log
 	template <int LogID = DEFAULT_LOGGER>
 	inline constexpr auto log(Severity severity)
 	{
-#ifdef AEGIX_LOG_DISABLE_LOGGING
-		return NoOpLogStream();
-#else
-		return LogStream<LogID>(severity);
-#endif
+		if constexpr (LOGGING_ENABLED)
+			return LogStream<LogID>(severity);
+		else
+			return NoOpLogStream();
 	}
 
 	template <int LogID = DEFAULT_LOGGER>
 	inline constexpr auto fatal()
 	{
-#ifdef AEGIX_LOG_DISABLE_FATAL
-		return NoOpLogStream();
-#else
-		return log<LogID>(Severity::Fatal);
-#endif 
+		if constexpr (FATAL_ENABLED)
+			return log<LogID>(Severity::Fatal);
+		else
+			return NoOpLogStream();
 	}
 
 	template <int LogID = DEFAULT_LOGGER>
 	inline constexpr auto warn()
 	{
-#ifdef AEGIX_LOG_DISABLE_WARN
-		return NoOpLogStream();
-#else
-		return log<LogID>(Severity::Warn);
-#endif
+		if constexpr (WARN_ENABLED)
+			return log<LogID>(Severity::Warn);
+		else
+			return NoOpLogStream();
 	}
 
 	template <int LogID = DEFAULT_LOGGER>
 	inline constexpr auto info()
 	{
-#ifdef AEGIX_LOG_DISABLE_INFO
-		return NoOpLogStream();
-#else
-		return log<LogID>(Severity::Info);
-#endif
+		if constexpr (INFO_ENABLED)
+			return log<LogID>(Severity::Info);
+		else
+			return NoOpLogStream();
 	}
 
 	template <int LogID = DEFAULT_LOGGER>
 	inline constexpr auto debug()
 	{
-#ifdef AEGIX_LOG_DISABLE_DEBUG
-		return NoOpLogStream();
-#else
-		return log<LogID>(Severity::Debug);
-#endif
+		if constexpr (DEBUG_ENABLED)
+			return log<LogID>(Severity::Debug);
+		else
+			return NoOpLogStream();
 	}
 
 	template <int LogID = DEFAULT_LOGGER>
 	inline constexpr auto trace()
 	{
-#ifdef AEGIX_LOG_DISABLE_TRACE
-		return NoOpLogStream();
-#else
-		return log<LogID>(Severity::Trace);
-#endif
+		if constexpr (TRACE_ENABLED)
+			return log<LogID>(Severity::Trace);
+		else
+			return NoOpLogStream();
 	}
 } // namespace Aegix::Log
