@@ -64,7 +64,17 @@ namespace Aegix::Log
 			if constexpr (!Detail::FATAL_ENABLED)
 				return;
 
-			log(Severity::Fatal, fmt, std::forward<Args>(args)...);
+			if constexpr (Detail::FATAL_ALLOW_ASYNC)
+			{
+				log(Severity::Fatal, fmt, std::forward<Args>(args)...);
+			}
+			else
+			{
+				logImmediate({ Severity::Fatal,
+					std::chrono::system_clock::now(),
+					std::this_thread::get_id(),
+					std::format(fmt, std::forward<Args>(args)...) });
+			}
 		}
 
 		template <typename... Args>
