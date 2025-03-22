@@ -35,17 +35,12 @@ namespace Aegix::Log
 
 			if (m_logThread)
 			{
-				// Adding a task can fail if the queue is full
-				auto result = m_logThread->addTask(entry, std::bind_front(&Logger::write, this));
-				if (result.has_value())
-				{
-					m_lastTask = std::move(*result);
-					return;
-				}
+				logAsync(std::move(entry));
 			}
-			
-			// If the log thread is not available, log directly on this thread
-			write(entry);
+			else
+			{
+				logImmediate(entry);
+			}
 #endif
 		}
 
@@ -111,13 +106,6 @@ namespace Aegix::Log
 			return *this;
 		}
 
-		void write(const LogEntry& entry)
-		{
-			std::lock_guard lock(m_sinkMutex);
-			for (auto& sink : m_sinks)
-				sink->log(entry);
-		}
-
 		[[nodiscard]] auto severityThreshold() const -> Severity { return m_severityThreshold; }
 
 		void setSeverityThreshold(Severity severity) { m_severityThreshold = severity; }
@@ -127,6 +115,31 @@ namespace Aegix::Log
 			: Singleton<Logger<ID>>(), m_logThread{ std::move(logThread) },
 			  m_severityThreshold{ severityThreshold }
 		{
+		}
+
+		void logImmediate(const LogEntry& entry)
+		{
+			std::lock_guard lock(m_sinkMutex);
+			for (auto& sink : m_sinks)
+			{
+				sink->log(entry);
+			}
+		}
+
+		void logAsync(LogEntry entry)
+		{
+			assert(m_logThread);
+
+			// Adding a task can fail if the queue is full
+			auto result = m_logThread->addTask(entry, std::bind_front(&Logger::logImmediate, this));
+			if (result.has_value())
+			{
+				m_lastTask = std::move(*result);
+				return;
+			}
+
+			// If the log thread is not available/full, log directly on this thread
+			logImmediate(entry);
 		}
 
 		std::shared_ptr<LogThread> m_logThread;
