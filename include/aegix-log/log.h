@@ -1,6 +1,6 @@
 #pragma once
 
-#include "aegix-log/config.h"
+#include "aegix-log/detail/config.h"
 #include "aegix-log/log_entry.h"
 #include "aegix-log/log_stream.h"
 #include "aegix-log/logger.h"
@@ -70,7 +70,7 @@ namespace Aegix::Log
 	template <int LogID = DEFAULT_LOGGER>
 	inline constexpr auto log(Severity severity)
 	{
-		if constexpr (LOGGING_ENABLED)
+		if constexpr (Detail::LOGGING_ENABLED)
 			return LogStream<LogID>(severity);
 		else
 			return NoOpLogStream();
@@ -79,7 +79,7 @@ namespace Aegix::Log
 	template <int LogID = DEFAULT_LOGGER>
 	inline constexpr auto fatal()
 	{
-		if constexpr (FATAL_ENABLED)
+		if constexpr (Detail::FATAL_ENABLED)
 			return log<LogID>(Severity::Fatal);
 		else
 			return NoOpLogStream();
@@ -88,7 +88,7 @@ namespace Aegix::Log
 	template <int LogID = DEFAULT_LOGGER>
 	inline constexpr auto warn()
 	{
-		if constexpr (WARN_ENABLED)
+		if constexpr (Detail::WARN_ENABLED)
 			return log<LogID>(Severity::Warn);
 		else
 			return NoOpLogStream();
@@ -97,7 +97,7 @@ namespace Aegix::Log
 	template <int LogID = DEFAULT_LOGGER>
 	inline constexpr auto info()
 	{
-		if constexpr (INFO_ENABLED)
+		if constexpr (Detail::INFO_ENABLED)
 			return log<LogID>(Severity::Info);
 		else
 			return NoOpLogStream();
@@ -106,7 +106,7 @@ namespace Aegix::Log
 	template <int LogID = DEFAULT_LOGGER>
 	inline constexpr auto debug()
 	{
-		if constexpr (DEBUG_ENABLED)
+		if constexpr (Detail::DEBUG_ENABLED)
 			return log<LogID>(Severity::Debug);
 		else
 			return NoOpLogStream();
@@ -115,7 +115,7 @@ namespace Aegix::Log
 	template <int LogID = DEFAULT_LOGGER>
 	inline constexpr auto trace()
 	{
-		if constexpr (TRACE_ENABLED)
+		if constexpr (Detail::TRACE_ENABLED)
 			return log<LogID>(Severity::Trace);
 		else
 			return NoOpLogStream();

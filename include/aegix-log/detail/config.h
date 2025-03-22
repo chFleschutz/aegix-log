@@ -1,7 +1,11 @@
 #pragma once
 
-namespace Aegix::Log
+// Macros for configuring the logging system
+
+namespace Aegix::Log::Detail
 {
+	// Enable/Disable logging for each severity level
+
 #ifdef AEGIX_LOG_DISABLE_LOGGING
 	constexpr bool LOGGING_ENABLED = false;
 #else
@@ -37,4 +41,13 @@ namespace Aegix::Log
 #else
 	constexpr bool TRACE_ENABLED = true;
 #endif // AEGIX_LOG_DISABLE_TRACE
+
+
+	// Log fatal messages immediately (no async logging)
+
+#ifdef AEGIX_LOG_FATAL_NO_ASYNC
+	constexpr bool FATAL_ALLOW_ASYNC = false;
+#else
+	constexpr bool FATAL_ALLOW_ASYNC = true;
+#endif // AEGIX_LOG_LOG_FATAL_IMMEDIATE
 }

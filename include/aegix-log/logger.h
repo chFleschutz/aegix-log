@@ -1,6 +1,6 @@
 #pragma once
 
-#include "aegix-log/config.h"
+#include "aegix-log/detail/config.h"
 #include "aegix-log/formatter/default_formatter.h"
 #include "aegix-log/helper/singleton.h"
 #include "aegix-log/log_entry.h"
@@ -30,7 +30,7 @@ namespace Aegix::Log
 		/// @note If the log thread is available, the task will be executed on that thread
 		void log(LogEntry entry)
 		{
-			if constexpr (!LOGGING_ENABLED)
+			if constexpr (!Detail::LOGGING_ENABLED)
 				return;
 
 			if (entry.severity < m_severityThreshold)
@@ -49,7 +49,7 @@ namespace Aegix::Log
 		template <typename... Args>
 		void log(Severity severity, std::format_string<Args...> fmt, Args&&... args)
 		{
-			if constexpr (!LOGGING_ENABLED)
+			if constexpr (!Detail::LOGGING_ENABLED)
 				return;
 
 			log({ severity,
@@ -61,7 +61,7 @@ namespace Aegix::Log
 		template <typename... Args>
 		void fatal(std::format_string<Args...> fmt, Args&&... args)
 		{
-			if constexpr (!FATAL_ENABLED)
+			if constexpr (!Detail::FATAL_ENABLED)
 				return;
 
 			log(Severity::Fatal, fmt, std::forward<Args>(args)...);
@@ -70,7 +70,7 @@ namespace Aegix::Log
 		template <typename... Args>
 		void warn(std::format_string<Args...> fmt, Args&&... args)
 		{
-			if constexpr (!WARN_ENABLED)
+			if constexpr (!Detail::WARN_ENABLED)
 				return;
 
 			log(Severity::Warn, fmt, std::forward<Args>(args)...);
@@ -79,7 +79,7 @@ namespace Aegix::Log
 		template <typename... Args>
 		void info(std::format_string<Args...> fmt, Args&&... args)
 		{
-			if constexpr (!INFO_ENABLED)
+			if constexpr (!Detail::INFO_ENABLED)
 				return;
 
 			log(Severity::Info, fmt, std::forward<Args>(args)...);
@@ -88,7 +88,7 @@ namespace Aegix::Log
 		template <typename... Args>
 		void debug(std::format_string<Args...> fmt, Args&&... args)
 		{
-			if constexpr (!DEBUG_ENABLED)
+			if constexpr (!Detail::DEBUG_ENABLED)
 				return;
 
 			log(Severity::Debug, fmt, std::forward<Args>(args)...);
@@ -97,7 +97,7 @@ namespace Aegix::Log
 		template <typename... Args>
 		void trace(std::format_string<Args...> fmt, Args&&... args)
 		{
-			if constexpr (!TRACE_ENABLED)
+			if constexpr (!Detail::TRACE_ENABLED)
 				return;
 
 			log(Severity::Trace, fmt, std::forward<Args>(args)...);
